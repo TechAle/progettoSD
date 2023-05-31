@@ -1,7 +1,7 @@
 # Progetto Sistemi Distruiti
 ## Componenti del gruppo
 - Alessandro Condello 887918
-- Martina Elli [TODO MATRICOLA]
+- Martina Elli 886077
 - Carlo Luca Comotti 885885
 ## Descrizione
 [TODO DESCRIZIONE]
