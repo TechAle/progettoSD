@@ -8,3 +8,4 @@
 [TODO FOTO]
 ## Impostare il progetto
 [TODO IMPOSTARE PROGETTO]
+ciao
