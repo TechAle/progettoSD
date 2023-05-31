@@ -2,7 +2,7 @@
 ## Componenti del gruppo
 - Alessandro Condello 887918
 - Martina Elli [TODO MATRICOLA]
-- Luca Comotti [TODO MATRICOLA]
+- Carlo Luca Comotti 885885
 ## Descrizione
 [TODO DESCRIZIONE]
 [TODO FOTO]
