@@ -81,6 +81,17 @@ public class proiezione {
         return 1;
     }
 
-
+    @Override
+    public String toString() {
+        StringBuilder postiOccupatiSTR = new StringBuilder();
+        boolean first = true;
+        for(prenotazione pren : postiOccupati) {
+            if (!first)
+                postiOccupatiSTR.append(',');
+            postiOccupatiSTR.append(pren);
+            first = false;
+        }
+        return String.format("$%s:%s[%s]", nome, posti, postiOccupatiSTR);
+    }
 }
 

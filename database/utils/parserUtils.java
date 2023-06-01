@@ -37,7 +37,6 @@ public class parserUtils {
                     bodyRESP nextCheck = body.getNext().getNext();
                     if (!(nextCheck instanceof arrayRESP))
                         return new commandRESP("-ADD deve avere come second parametro la lista di posti");
-
                 case "DEL":
                     if (body == null)
                         return new commandRESP("-DEL ha bisogno di un corpo");

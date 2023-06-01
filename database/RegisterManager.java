@@ -26,13 +26,31 @@ public class RegisterManager {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 database.put(Integer.parseInt(parts[0].replaceAll(" ", "")),
-                            new proiezione(parts[1], Integer.parseInt(parts[2].replaceAll(" ", "")), parts[3]));
+                            new proiezione(parts[1].replaceAll(" ", ""), Integer.parseInt(parts[2].replaceAll(" ", "")), parts[3]));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         int b = 0;
 
+    }
+
+    public String getStanze() {
+        StringBuilder output = new StringBuilder();
+        boolean before = false;
+        for(int id : database.keySet()) {
+            if (before)
+                output.append("\r\n");
+
+            before = true;
+        }
+        for(proiezione t : database.values()) {
+            if (before)
+                output.append("\r\n");
+            output.append(t.toString());
+            before = true;
+        }
+        return output.toString();
     }
 
 
