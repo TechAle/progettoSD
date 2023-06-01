@@ -36,21 +36,41 @@ public class RegisterManager {
     }
 
     public String getStanze() {
-        StringBuilder output = new StringBuilder();
+        StringBuilder output = new StringBuilder("+");
         boolean before = false;
         for(int id : database.keySet()) {
             if (before)
                 output.append("\r\n");
-
-            before = true;
-        }
-        for(proiezione t : database.values()) {
-            if (before)
-                output.append("\r\n");
-            output.append(t.toString());
+            output.append(String.format("%d%s", id, database.get(id).toString()));
             before = true;
         }
         return output.toString();
+    }
+
+    public String getPostiOccupati(int id) {
+        if (database.containsKey(id)) {
+            return database.get(id).getPostiOccupati();
+        } else return "-Id inesistente";
+    }
+
+    public String prenotaPosti(int id, int prenotazione, List<Integer> posti) {
+        if (database.containsKey(id)) {
+            return database.get(id).aggiungiPosti(posti, prenotazione);
+        } else return "-Id inesistente";
+    }
+
+    public String rimuoviPosti(int id, int prenotazione) {
+        if (database.containsKey(id)) {
+            return database.get(id).rimuoviPosti(prenotazione);
+        }else return "-Id inesistente";
+    }
+
+    public String rimuoviPosti(int id, int prenotazione, List<Integer> posti) {
+        if (posti.size() == 0)
+            return rimuoviPosti(id, prenotazione);
+        if (database.containsKey(id)) {
+            return database.get(id).rimuoviPosti(posti);
+        }else return "-Id inesistente";
     }
 
 

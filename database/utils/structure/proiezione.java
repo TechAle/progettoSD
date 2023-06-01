@@ -34,25 +34,26 @@ public class proiezione {
         return posti;
     }
 
-    public List<Integer> getPostiOccupati() {
-        List<Integer> output = new ArrayList<>();
+    public String getPostiOccupati() {
+        StringBuilder output = new StringBuilder();
         for(prenotazione pren : this.postiOccupati)
-            output.add(pren.posto());
-        return output;
+            output.append(pren.toString()).append("\r\n");
+        return output.toString();
     }
 
-    public int aggiungiPosti(List<prenotazione> pren) {
+    public synchronized String aggiungiPosti(List<Integer> pren, int idPrenotazione) {
         if (this.postiOccupati.size() + pren.size() <= posti)
-            return -1;
-        for(prenotazione prenCheck : pren)
+            return "-Non ci sono abbastanza posti";
+        for(int prenCheck : pren)
             for(prenotazione occupati : this.postiOccupati)
-                if (occupati.posto() == prenCheck.posto())
-                    return 0;
-        this.postiOccupati.addAll(pren);
-        return 1;
+                if (occupati.posto() == prenCheck)
+                    return "-Qualche posto è già stato occupato";
+        for (int prenCheck : pren)
+            this.postiOccupati.add(new prenotazione(idPrenotazione, prenCheck));
+        return "+Prenotazione effettuata con successo";
     }
 
-    public boolean rimuoviPosti(int idPrenotazione) {
+    public synchronized String rimuoviPosti(int idPrenotazione) {
         boolean removedOne = false;
         for(int i = 0; i < this.postiOccupati.size(); i++)
             if (this.postiOccupati.get(i).idPrenotazione() == idPrenotazione) {
@@ -60,25 +61,27 @@ public class proiezione {
                 i--;
                 removedOne = true;
             }
-        return removedOne;
+        return removedOne
+                ? "+Prenotazione rimossa con successo"
+                : "-Non è stata trovata nessuna prenotazione con id " + idPrenotazione;
     }
 
-    public int rimuoviPosti(List<Integer> pren) {
+    public synchronized String rimuoviPosti(List<Integer> pren) {
         ArrayList<prenotazione> toRemove = new ArrayList<>();
         for(int toCheck : pren)
             for(prenotazione prenCheck : this.postiOccupati)
                 if (prenCheck.posto() == toCheck) {
                     for(prenotazione addedBefore : toRemove)
                         if (addedBefore.posto() == prenCheck.posto())
-                            return -1;
+                            return "-Sono stati trovati dei posti duplicati";
                     toRemove.add(prenCheck);
                     break;
                 }
         if (toRemove.size() == pren.size()) {
             while (!toRemove.isEmpty())
                 this.postiOccupati.remove(toRemove.remove(0));
-        } else return 0;
-        return 1;
+        } else return "-Sono stati inseriti posti non esistenti";
+        return "+Posti rimossi con successo";
     }
 
     @Override
