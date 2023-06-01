@@ -1,0 +1,4 @@
+id, nome, postiLiberi, postiOccupati
+10, film1, 100, []
+48, film2, 10, [(0.1);(0.4);(1.6)]
+1, film3, 3, [(0.3)]
