@@ -1,7 +1,7 @@
 # Protocollo TCP
 [TODO RISCRIVERE MEGLIO]
 ## Semantica
-[TODO]
+- : vi
 ## Richieste del client
 - Visualizza tutte le sale disponibili: VIEW
 - Visualizza posti disponibili in una sala: VIEW:sala
@@ -9,8 +9,8 @@
 - Aggiungere una nuova prenotazione: ADD:sala[:posto]
   - :sala rappresenta un numero con l'id della sala
   - :posto rappresenta un numero con il posto da rimuovere
-- Rimozione di posti: DEL:sala*N[:posto]
-  - Se *N è 0 allora si rimuovono tutti i posti
+- Rimozione di posti: DEL:prenotazione[:posto]
+  - Se [:posto] è vuoto oppure non esistente allora si rimuoverà tutta la prenotazione
 - Nota: Le richieste del client sono una bulk string e non un array
 ## Risposte del server
 - \+[Messaggio di successo]

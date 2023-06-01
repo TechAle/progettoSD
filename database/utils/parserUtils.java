@@ -1,7 +1,7 @@
 package database.utils;
 
 import database.utils.structure.bodyRESP;
-import database.utils.structure.headRESP;
+import database.utils.structure.commandRESP;
 import database.utils.structure.types.arrayRESP;
 import database.utils.structure.types.intRESP;
 
@@ -12,22 +12,43 @@ public class parserUtils {
 
 
 
-    public static headRESP parseRedis(String input) {
-        int indexIniziale = getAzione(input) + 1;
-        if (indexIniziale == -1)
-            return new headRESP("-Azione non trovata");
-        headRESP output = new headRESP(input.substring(0, indexIniziale));
-        bodyRESP body = parserBody(input, indexIniziale, input.length(), null);
-        output.setNext(body);
-        switch (output.getAction()) {
-            case "VIEW":
-                return null;
-            case "ADD":
-                return null;
-            case "DEL":
-                return null;
+    public static commandRESP parseRedis(String input) {
+        input = input.substring(1, input.length() - 1);
+        commandRESP prev = null;
+        for(String operation : input.split("\\r\\n")) {
+            commandRESP output = null;
+            int indexIniziale = getAzione(operation) + 1;
+            if (indexIniziale == -1)
+                return new commandRESP("-Azione non trovata");
+            output = new commandRESP(operation.substring(0, indexIniziale));
+            bodyRESP body = parserBody(operation, indexIniziale, operation.length(), null);
+            if (body != null && body.error)
+                return new commandRESP("-" + body.getError());
+            output.setOperations(body);
+            switch (output.getAction()) {
+                case "VIEW":
+                    if (body != null && !(body.getNext() instanceof intRESP))
+                        return new commandRESP("-VIEW se non ha un corpo deve possedere un numero");
+                case "ADD":
+                    if (body == null)
+                        return new commandRESP("-ADD ha bisogno di un corpo");
+                    if (!(body.getNext() instanceof intRESP))
+                        return new commandRESP("-ADD deve avere come primo parametro l'id della sala");
+                    bodyRESP nextCheck = body.getNext().getNext();
+                    if (!(nextCheck instanceof arrayRESP))
+                        return new commandRESP("-ADD deve avere come second parametro la lista di posti");
+
+                case "DEL":
+                    if (body == null)
+                        return new commandRESP("-DEL ha bisogno di un corpo");
+                    if (!(body.getNext() instanceof intRESP))
+                        return new commandRESP("-DEL deve avere come parametro l'id della prenotazione");
+            }
+            if (prev != null)
+                prev.setNext(output);
+            prev = output;
         }
-        return null;
+        return prev;
     }
 
     private static bodyRESP parserBody(String input, int startingIdx, int endingIdx, bodyRESP prev) {
@@ -55,7 +76,7 @@ public class parserUtils {
             case '[' -> {
                 output = new arrayRESP();
                 bodyRESP toAdd = parserBody(input, startingIdx, getNextClosedBar(input, startingIdx), null);
-                startingIdx += input.substring(startingIdx).indexOf(']');
+                startingIdx += getNextClosedBar(input.substring(startingIdx), 0);
                 ((arrayRESP) output).setInnerValue(toAdd);
             }
             case ':' -> {
@@ -115,7 +136,7 @@ public class parserUtils {
      */
     private static int getAzione(String input) {
         ArrayList<String> possibleActions = new ArrayList<>();
-        Collections.addAll(possibleActions, headRESP.allowedActions);
+        Collections.addAll(possibleActions, commandRESP.allowedActions);
         StringBuilder toCheck = new StringBuilder();
         char[] inputChar = input.toCharArray();
         int size = possibleActions.size();
