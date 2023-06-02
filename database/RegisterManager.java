@@ -31,7 +31,6 @@ public class RegisterManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        int b = 0;
 
     }
 
@@ -59,6 +58,13 @@ public class RegisterManager {
         } else return "-Id inesistente";
     }
 
+    public String prenotaPosti(int id, List<Integer> posti) {
+        if (database.containsKey(id)) {
+            int idPrenotazione = database.get(id).generaIdPrenotazione();
+            return database.get(id).aggiungiPosti(posti, idPrenotazione);
+        } else return "-Id inesistente";
+    }
+
     public String rimuoviPosti(int id, int prenotazione) {
         if (database.containsKey(id)) {
             return database.get(id).rimuoviPosti(prenotazione);
@@ -69,7 +75,7 @@ public class RegisterManager {
         if (posti.size() == 0)
             return rimuoviPosti(id, prenotazione);
         if (database.containsKey(id)) {
-            return database.get(id).rimuoviPosti(posti);
+            return database.get(id).rimuoviPosti(posti, prenotazione);
         }else return "-Id inesistente";
     }
 

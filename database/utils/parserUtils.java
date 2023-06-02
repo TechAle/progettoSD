@@ -15,6 +15,7 @@ public class parserUtils {
     public static commandRESP parseRedis(String input) {
         input = input.substring(1, input.length() - 1);
         commandRESP prev = null;
+        commandRESP first = null;
         for(String operation : input.split("\\r\\n")) {
             commandRESP output = null;
             int indexIniziale = getAzione(operation) + 1;
@@ -25,29 +26,37 @@ public class parserUtils {
             if (body != null && body.error)
                 return new commandRESP("-" + body.getError());
             output.setOperations(body);
+            /*
             switch (output.getAction()) {
                 case "VIEW":
-                    if (body != null && !(body.getNext() instanceof intRESP))
+                    if (body != null && !(body instanceof intRESP))
                         return new commandRESP("-VIEW se non ha un corpo deve possedere un numero");
+                    break;
                 case "ADD":
                     if (body == null)
                         return new commandRESP("-ADD ha bisogno di un corpo");
                     if (!(body.getNext() instanceof intRESP))
                         return new commandRESP("-ADD deve avere come primo parametro l'id della sala");
                     bodyRESP nextCheck = body.getNext().getNext();
-                    if (!(nextCheck instanceof arrayRESP))
-                        return new commandRESP("-ADD deve avere come second parametro la lista di posti");
+                    if (!(nextCheck instanceof arrayRESP) && !(nextCheck instanceof intRESP))
+                        return new commandRESP("-ADD deve avere come second parametro o la lista dei posti oppure l'id della prenotazione");
+                    if (nextCheck instanceof intRESP && !(nextCheck.getNext() instanceof arrayRESP))
+                        return new commandRESP("-ADD deve avere come terzo parametor la lista dei posti");
+                    break;
                 case "DEL":
                     if (body == null)
                         return new commandRESP("-DEL ha bisogno di un corpo");
                     if (!(body.getNext() instanceof intRESP))
                         return new commandRESP("-DEL deve avere come parametro l'id della prenotazione");
-            }
+                    break;
+            }*/
             if (prev != null)
                 prev.setNext(output);
+            if (first == null)
+                first = output;
             prev = output;
         }
-        return prev;
+        return first;
     }
 
     private static bodyRESP parserBody(String input, int startingIdx, int endingIdx, bodyRESP prev) {

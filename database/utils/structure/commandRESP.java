@@ -10,7 +10,7 @@ public class commandRESP {
     private commandRESP next = null;
     private commandRESP prev = null;
     private final String action;
-    private final boolean error;
+
 
     public commandRESP getNext() {
         return next;
@@ -29,9 +29,10 @@ public class commandRESP {
     }
 
     public commandRESP(String action) {
-        this.error = action.startsWith("-");
         this.action = action;
     }
+
+
 
     public bodyRESP getOperations() {
         return operations;

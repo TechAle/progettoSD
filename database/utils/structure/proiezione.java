@@ -66,7 +66,7 @@ public class proiezione {
                 : "-Non è stata trovata nessuna prenotazione con id " + idPrenotazione;
     }
 
-    public synchronized String rimuoviPosti(List<Integer> pren) {
+    public synchronized String rimuoviPosti(List<Integer> pren, int idPrenotazione) {
         ArrayList<prenotazione> toRemove = new ArrayList<>();
         for(int toCheck : pren)
             for(prenotazione prenCheck : this.postiOccupati)
@@ -74,6 +74,8 @@ public class proiezione {
                     for(prenotazione addedBefore : toRemove)
                         if (addedBefore.posto() == prenCheck.posto())
                             return "-Sono stati trovati dei posti duplicati";
+                    if (prenCheck.idPrenotazione() != idPrenotazione)
+                        return "-Questa non è una tua prenotazione";
                     toRemove.add(prenCheck);
                     break;
                 }
@@ -95,6 +97,11 @@ public class proiezione {
             first = false;
         }
         return String.format("$%s:%s[%s]", nome, posti, postiOccupatiSTR);
+    }
+
+    // TODO
+    public int generaIdPrenotazione() {
+        return 0;
     }
 }
 
