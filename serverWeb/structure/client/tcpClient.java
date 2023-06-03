@@ -1,4 +1,4 @@
-package clientWeb.utils.client;
+package serverWeb.structure.client;
 
 import java.io.*;
 import java.net.Socket;

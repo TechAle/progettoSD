@@ -1,5 +1,10 @@
-package database.structure.RESP;
+package common.RESP;
 
+/**
+ * @author Alessandro Condello
+ * @since 1/06/23
+ * @last-modified 03/06/23
+ */
 public abstract class bodyRESP {
     protected Object value;
     private bodyRESP next;

@@ -8,12 +8,17 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.*;
 
-public class RegisterManager {
+/**
+ * @author Alessandro Condello
+ * @since 1/06/23
+ * @last-modified 03/06/23
+ */
+public class databaseManager {
 
-    private static RegisterManager register;
+    private static databaseManager register;
     Map<Integer, proiezione> database;
 
-    private RegisterManager() {
+    private databaseManager() {
         database = new HashMap<>();
         loadData();
     }
@@ -78,9 +83,9 @@ public class RegisterManager {
 
 
 
-    public static synchronized RegisterManager getInstance(){
+    public static synchronized databaseManager getInstance(){
         if (register == null)
-            register = new RegisterManager();
+            register = new databaseManager();
         return register;
     }
 

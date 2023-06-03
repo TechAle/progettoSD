@@ -5,6 +5,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * @author Alessandro Condello
+ * @since 1/06/23
+ * @last-modified 03/06/23
+ */
 public class proiezione {
     private final String nome;
     private final int posti;

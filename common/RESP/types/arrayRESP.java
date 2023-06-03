@@ -1,7 +1,12 @@
-package database.structure.RESP.types;
+package common.RESP.types;
 
-import database.structure.RESP.bodyRESP;
+import common.RESP.bodyRESP;
 
+/**
+ * @author Alessandro Condello
+ * @since 1/06/23
+ * @last-modified 03/06/23
+ */
 public class arrayRESP extends bodyRESP {
 
     public bodyRESP getValue() {

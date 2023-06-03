@@ -1,4 +1,4 @@
-package clientWeb.utils.client;
+package serverWeb.structure.client;
 
 /**
  * Classe base per un client socket

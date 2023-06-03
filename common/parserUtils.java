@@ -1,30 +1,44 @@
 package common;
 
-import database.structure.RESP.bodyRESP;
-import database.structure.RESP.commandRESP;
-import database.structure.RESP.types.arrayRESP;
-import database.structure.RESP.types.intRESP;
+import common.RESP.bodyRESP;
+import common.RESP.commandRESP;
+import common.RESP.types.arrayRESP;
+import common.RESP.types.intRESP;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * @author Alessandro Condello
+ * @since 1/06/23
+ * @last-modified 03/06/23
+ */
 public class parserUtils {
 
 
-
+    /**
+     * @param input La stringa di cui vogliamo la struttura
+     * @return la struttura dati
+     */
     public static commandRESP parseRedisCommand(String input) {
+        // Togliamo le parentesi quadre
         input = input.substring(1, input.length() - 1);
         commandRESP prev = null;
         commandRESP first = null;
+        // Ogni operazione si differenza dalle altre da \r\n
         for(String operation : input.split("\\r\\n")) {
-            commandRESP output = null;
-            int indexIniziale = getAzione(operation) + 1;
-            if (indexIniziale == -1)
-                return new commandRESP("-Azione non trovata");
-            output = new commandRESP(operation.substring(0, indexIniziale));
+            // Struttura: Azione unito dopo con una combinazione di : $ []
+            int indexIniziale = getAzione(operation);
+            if (indexIniziale == -1) // Non è stata trovata l'azione
+                return new commandRESP("-$Azione non trovata");
+            // Crea la struttura
             bodyRESP body = parserBody(operation, indexIniziale, operation.length(), null);
-            if (body != null && body.error)
-                return new commandRESP("-" + body.getError());
+            // Vari errori
+            if (body == null) return new commandRESP("-$Errore nella sintassi");
+            else if (body.error)
+                return new commandRESP("-$" + body.getError());
+            // Inizializzo l'output finale
+            commandRESP output = new commandRESP(operation.substring(0, indexIniziale));
             output.setOperations(body);
             if (prev != null)
                 prev.setNext(output);
@@ -35,7 +49,23 @@ public class parserUtils {
         return first;
     }
 
-    private static bodyRESP parserBody(String input, int startingIdx, int endingIdx, bodyRESP prev) {
+    /**
+     * Questa è una funzione ricorsiva che ha come caso base quando i due indici si invertono.
+     * Il funzionamento è il seguente:
+     * 1) Cerchiamo il secondo carattere limitatore più vicino dopo il nostro indice di partenza
+     *      Il carattere limitatore è ciò che ci limita un valore da un altro : $ []
+     * 2) Dal nostro indice di partenza all'indice di questo carattere limitatore estraiamo la stringa
+     * 3) A seconda del primo carattere limitatore facciamo determinate operazioni con ciò che abbiamo trovato
+     * 4) Richiama la funzione ricorsiva con indice del secondo carattere limitatore
+     *      Nel caso il secondo carattere limitatore sia [, allora prima chiamo la funzione ricorsiva
+     *      Tra la parentesi quadra aperta e quella che la chiude, e poi dalla parentesi chiusa fino all'indice finale
+     * @param input La stringa di input
+     * @param startingIdx L'indice da dove iniziamo ad analizzare la stringa
+     * @param endingIdx L'indice dove finiamo di analizzare la stringa
+     * @param prev la sezione che abbiamo codificato prima
+     * @return La struttura dati
+     */
+    public static bodyRESP parserBody(String input, int startingIdx, int endingIdx, bodyRESP prev) {
         if (startingIdx >= endingIdx)
             return prev;
         bodyRESP output;
@@ -135,7 +165,7 @@ public class parserUtils {
                     if ((size -= 1) == 0)
                         return -1;
                 } else if (toCheck.toString().equals(toCheckString))
-                    return i;
+                    return i + 1;
             }
         }
 

@@ -1,10 +1,10 @@
 package database;
 
+import common.RESP.bodyRESP;
+import common.RESP.commandRESP;
+import common.RESP.types.arrayRESP;
+import common.RESP.types.intRESP;
 import common.parserUtils;
-import database.structure.RESP.bodyRESP;
-import database.structure.RESP.commandRESP;
-import database.structure.RESP.types.arrayRESP;
-import database.structure.RESP.types.intRESP;
 
 import java.util.ArrayList;
 
@@ -17,7 +17,7 @@ public class test {
     }
 
     static void testCommand() {
-        commandRESP comando = parserUtils.parseRedisCommand("[VIEW:48\r\nDEL:48:0[:4]\r\nADD:10:1[:0:1]]");
+        commandRESP comando = parserUtils.parseRedisCommand("[VIEW:48\r\nDEL:48:0[:4]\r\nADD:10[:0:1]]");
         // Se la prima azione è un errore, allora vuol dire che c'è un problema con la sintassi del comando
         String primaAzione = comando.getAction();
         if (comando.isError()) {
@@ -38,9 +38,9 @@ public class test {
                  */
                 case "VIEW" -> {
                     if (comando.getOperazione() == null)
-                        output.append(RegisterManager.getInstance().getStanze());
+                        output.append(databaseManager.getInstance().getStanze());
                     else if (comando.getOperazione() instanceof intRESP)
-                        output.append(RegisterManager.getInstance().getStanza(
+                        output.append(databaseManager.getInstance().getStanza(
                                 ((intRESP) comando.getOperazione()).getValue())
                         );
                 }
@@ -59,7 +59,7 @@ public class test {
                         // ADD:idProiezione[:posto:posto:...]
                         if (prossimoControllo instanceof arrayRESP) {
                             array = getValuesArray((arrayRESP) prossimoControllo);
-                            output.append(RegisterManager.getInstance().prenotaPosti(
+                            output.append(databaseManager.getInstance().prenotaPosti(
                                     ((intRESP) comando.getOperazione()).getValue(),
                                     array
                             ));
@@ -68,7 +68,7 @@ public class test {
                             prossimoControllo = prossimoControllo.getNext();
                             if (prossimoControllo instanceof arrayRESP) {
                                 array = getValuesArray((arrayRESP) prossimoControllo);
-                                output.append(RegisterManager.getInstance().prenotaPosti(
+                                output.append(databaseManager.getInstance().prenotaPosti(
                                         ((intRESP) comando.getOperazione()).getValue(),
                                         ((intRESP) comando.getOperazione().getNext()).getValue(),
                                         array));
@@ -93,13 +93,13 @@ public class test {
                             // DEL:idProiezione:idPrenotazione[:posto:posto:...]
                             if (nextCheck instanceof arrayRESP) {
                                 array = getValuesArray((arrayRESP) nextCheck);
-                                output.append(RegisterManager.getInstance().rimuoviPosti(
+                                output.append(databaseManager.getInstance().rimuoviPosti(
                                         ((intRESP) comando.getOperazione()).getValue(),
                                         ((intRESP) comando.getOperazione().getNext()).getValue(),
                                         array));
                             // DEL:idProiezione:idPrenotazione
                             } else if (nextCheck == null) {
-                                output.append(RegisterManager.getInstance().rimuoviPosti(
+                                output.append(databaseManager.getInstance().rimuoviPosti(
                                         ((intRESP) comando.getOperazione()).getValue(),
                                         ((intRESP) comando.getOperazione().getNext()).getValue()));
                             } else

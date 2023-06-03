@@ -1,19 +1,24 @@
 package database.structure.server;
 
-import database.RegisterManager;
+import database.databaseManager;
 import database.utils.server.tcpServer;
 import database.utils.server.tcpSlave;
 import common.parserUtils;
-import database.structure.RESP.bodyRESP;
-import database.structure.RESP.commandRESP;
-import database.structure.RESP.types.arrayRESP;
-import database.structure.RESP.types.intRESP;
+import common.RESP.bodyRESP;
+import common.RESP.commandRESP;
+import common.RESP.types.arrayRESP;
+import common.RESP.types.intRESP;
 
 import java.net.Socket;
 import java.util.ArrayList;
 
 import static common.parserUtils.getValuesArray;
 
+/**
+ * @author Alessandro Condello
+ * @since 1/06/23
+ * @last-modified 03/06/23
+ */
 public class serverSlaveExample extends tcpSlave {
     /**
      * Inizializza tutte le variabili per l'utilizzo
@@ -49,9 +54,9 @@ public class serverSlaveExample extends tcpSlave {
                  */
                 case "VIEW" -> {
                     if (comando.getOperazione() == null)
-                        output.append(RegisterManager.getInstance().getStanze());
+                        output.append(databaseManager.getInstance().getStanze());
                     else if (comando.getOperazione() instanceof intRESP)
-                        output.append(RegisterManager.getInstance().getStanza(
+                        output.append(databaseManager.getInstance().getStanza(
                                 ((intRESP) comando.getOperazione()).getValue())
                         );
                 }
@@ -70,7 +75,7 @@ public class serverSlaveExample extends tcpSlave {
                         // ADD:idProiezione[:posto:posto:...]
                         if (prossimoControllo instanceof arrayRESP) {
                             array = getValuesArray((arrayRESP) prossimoControllo);
-                            output.append(RegisterManager.getInstance().prenotaPosti(
+                            output.append(databaseManager.getInstance().prenotaPosti(
                                     ((intRESP) comando.getOperazione()).getValue(),
                                     array
                             ));
@@ -79,7 +84,7 @@ public class serverSlaveExample extends tcpSlave {
                             prossimoControllo = prossimoControllo.getNext();
                             if (prossimoControllo instanceof arrayRESP) {
                                 array = getValuesArray((arrayRESP) prossimoControllo);
-                                output.append(RegisterManager.getInstance().prenotaPosti(
+                                output.append(databaseManager.getInstance().prenotaPosti(
                                         ((intRESP) comando.getOperazione()).getValue(),
                                         ((intRESP) comando.getOperazione().getNext()).getValue(),
                                         array));
@@ -104,13 +109,13 @@ public class serverSlaveExample extends tcpSlave {
                             // DEL:idProiezione:idPrenotazione[:posto:posto:...]
                             if (nextCheck instanceof arrayRESP) {
                                 array = getValuesArray((arrayRESP) nextCheck);
-                                output.append(RegisterManager.getInstance().rimuoviPosti(
+                                output.append(databaseManager.getInstance().rimuoviPosti(
                                         ((intRESP) comando.getOperazione()).getValue(),
                                         ((intRESP) comando.getOperazione().getNext()).getValue(),
                                         array));
                                 // DEL:idProiezione:idPrenotazione
                             } else if (nextCheck == null) {
-                                output.append(RegisterManager.getInstance().rimuoviPosti(
+                                output.append(databaseManager.getInstance().rimuoviPosti(
                                         ((intRESP) comando.getOperazione()).getValue(),
                                         ((intRESP) comando.getOperazione().getNext()).getValue()));
                             } else
