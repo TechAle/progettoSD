@@ -141,4 +141,14 @@ public class parserUtils {
 
         return -1;
     }
+
+    public static ArrayList<Integer> getValuesArray(arrayRESP input) {
+        bodyRESP nextCheck = input.getValue();
+        ArrayList<Integer> output = new ArrayList<>();
+        while (nextCheck instanceof intRESP) {
+            output.add(((intRESP) nextCheck).getValue());
+            nextCheck = nextCheck.getNext();
+        }
+        return output;
+    }
 }

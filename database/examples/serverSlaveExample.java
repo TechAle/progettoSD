@@ -1,5 +1,6 @@
 package database.examples;
 
+import database.RegisterManager;
 import database.cheatsheet.server.tcpServer;
 import database.cheatsheet.server.tcpSlave;
 import database.utils.parserUtils;
@@ -10,6 +11,8 @@ import database.utils.structure.types.intRESP;
 
 import java.net.Socket;
 import java.util.ArrayList;
+
+import static database.utils.parserUtils.getValuesArray;
 
 public class serverSlaveExample extends tcpSlave {
     /**
@@ -25,96 +28,99 @@ public class serverSlaveExample extends tcpSlave {
     @Override
     protected void body() {
         String message = this.getMessage();
-        commandRESP command = parserUtils.parseRedisCommand(message);
-        String firstAction = command.getAction();
-        if (firstAction.startsWith("-")) {
-            System.out.println("[" + firstAction + "]");
+        commandRESP comando = parserUtils.parseRedisCommand(message);
+        // Se la prima azione è un errore, allora vuol dire che c'è un problema con la sintassi del comando
+        String primaAzione = comando.getAction();
+        if (comando.isError()) {
+            System.out.println("[" + primaAzione + "]");
             return;
         }
         StringBuilder output = new StringBuilder();
-        boolean before = false;
+        boolean aggiungiLimitatore = false;
         do {
-            if (before)
+            if (aggiungiLimitatore)
                 output.append("\r\n");
-            switch (command.getAction()) {
+            ArrayList<Integer> array;
+            switch (comando.getAction()) {
+                /*
+                    Comandi accettati:
+                    VIEW
+                    VIEW:idProiezione
+                 */
                 case "VIEW" -> {
-                    if (command.getOperations() == null)
-                        output.append(((serverExample) father).register.getStanze());
-                    else if (command.getOperations() instanceof intRESP)
-                        output.append(((serverExample) father).register.getStanza(((intRESP) command.getOperations()).getValue()));
-                    else
-                        output.append("-$VIEW non può possedere più di 1 parametro");
+                    if (comando.getOperazione() == null)
+                        output.append(RegisterManager.getInstance().getStanze());
+                    else if (comando.getOperazione() instanceof intRESP)
+                        output.append(RegisterManager.getInstance().getStanza(
+                                ((intRESP) comando.getOperazione()).getValue())
+                        );
                 }
+                /*
+                    Comandi accettati:
+                    ADD:idProiezione[:posto:posto:...]
+                    ADD:idProiezione:idPrenotazione[:posto:posto:...]
+                 */
                 case "ADD" -> {
-                    if (command.getOperations() == null)
+                    if (comando.getOperazione() == null)
                         output.append("-$ADD deve per forza avere un body");
-                    else if (!(command.getOperations() instanceof intRESP))
-                        output.append("-$ADD deve avere come primo parametro l'id della stanza");
+                    else if (!(comando.getOperazione() instanceof intRESP))
+                        output.append("-$ADD deve avere come primo parametro l'id della proiezione");
                     else {
-                        bodyRESP nextCheck = command.getOperations().getNext();
-                        ArrayList<Integer> array;
-                        if (nextCheck instanceof arrayRESP) {
-                            array = new ArrayList<>();
-                            nextCheck = ((arrayRESP) nextCheck).getValue();
-                            while (nextCheck instanceof intRESP) {
-                                array.add(((intRESP) nextCheck).getValue());
-                                nextCheck = nextCheck.getNext();
-                            }
-                            output.append(((serverExample) father).register.prenotaPosti(
-                                    ((intRESP) command.getOperations()).getValue(),
+                        bodyRESP prossimoControllo = comando.getOperazione().getNext();
+                        // ADD:idProiezione[:posto:posto:...]
+                        if (prossimoControllo instanceof arrayRESP) {
+                            array = getValuesArray((arrayRESP) prossimoControllo);
+                            output.append(RegisterManager.getInstance().prenotaPosti(
+                                    ((intRESP) comando.getOperazione()).getValue(),
                                     array
                             ));
-                        } else if (nextCheck instanceof intRESP) {
-                            nextCheck = nextCheck.getNext();
-                            if (nextCheck instanceof arrayRESP) {
-                                array = new ArrayList<>();
-                                nextCheck = ((arrayRESP) nextCheck).getValue();
-                                while (nextCheck instanceof intRESP) {
-                                    array.add(((intRESP) nextCheck).getValue());
-                                    nextCheck = nextCheck.getNext();
-                                }
-                                output.append(((serverExample) father).register.prenotaPosti(
-                                        ((intRESP) command.getOperations()).getValue(),
-                                        ((intRESP) command.getOperations().getNext()).getValue(),
+                            // ADD:idProiezione:idPrenotazione[:posto:posto:...]
+                        } else if (prossimoControllo instanceof intRESP) {
+                            prossimoControllo = prossimoControllo.getNext();
+                            if (prossimoControllo instanceof arrayRESP) {
+                                array = getValuesArray((arrayRESP) prossimoControllo);
+                                output.append(RegisterManager.getInstance().prenotaPosti(
+                                        ((intRESP) comando.getOperazione()).getValue(),
+                                        ((intRESP) comando.getOperazione().getNext()).getValue(),
                                         array));
                             } else output.append("-$ADD il terzo parametro vede rappresentare i posti da prenotare");
-                        } else
-                            output.append("-$ADD il secondo parametro deve essere o i posti da prenotare oppure  l'id della prenotazione");
+                        } else output.append("-$ADD il secondo parametro deve essere o i posti da prenotare oppure  l'id della prenotazione");
                     }
                 }
+                /*
+                    Comandi accettati:
+                    DEL:idProiezione:idPrenotazione
+                    DEL:idProiezione:idPrenotazione[:posto:posto:...]
+                 */
                 case "DEL" -> {
-                    if (command.getOperations() == null)
+                    if (comando.getOperazione() == null)
                         output.append("-$DEL deve per forza avere un body");
-                    else if (!(command.getOperations() instanceof intRESP))
-                        output.append("-$DEL deve avere come primo parametro l'id della stanza");
+                    else if (!(comando.getOperazione() instanceof intRESP))
+                        output.append("-$DEL deve avere come primo parametro l'id della proiezione");
                     else {
-                        bodyRESP nextCheck = command.getOperations().getNext();
-                        ArrayList<Integer> array;
+                        bodyRESP nextCheck = comando.getOperazione().getNext();
                         if (nextCheck instanceof intRESP) {
                             nextCheck = nextCheck.getNext();
+                            // DEL:idProiezione:idPrenotazione[:posto:posto:...]
                             if (nextCheck instanceof arrayRESP) {
-                                array = new ArrayList<>();
-                                nextCheck = ((arrayRESP) nextCheck).getValue();
-                                while (nextCheck instanceof intRESP) {
-                                    array.add(((intRESP) nextCheck).getValue());
-                                    nextCheck = nextCheck.getNext();
-                                }
-                                output.append(((serverExample) father).register.rimuoviPosti(
-                                        ((intRESP) command.getOperations()).getValue(),
-                                        ((intRESP) command.getOperations().getNext()).getValue(),
+                                array = getValuesArray((arrayRESP) nextCheck);
+                                output.append(RegisterManager.getInstance().rimuoviPosti(
+                                        ((intRESP) comando.getOperazione()).getValue(),
+                                        ((intRESP) comando.getOperazione().getNext()).getValue(),
                                         array));
+                                // DEL:idProiezione:idPrenotazione
                             } else if (nextCheck == null) {
-                                output.append(((serverExample) father).register.rimuoviPosti(
-                                        ((intRESP) command.getOperations()).getValue(),
-                                        ((intRESP) command.getOperations().getNext()).getValue()));
+                                output.append(RegisterManager.getInstance().rimuoviPosti(
+                                        ((intRESP) comando.getOperazione()).getValue(),
+                                        ((intRESP) comando.getOperazione().getNext()).getValue()));
                             } else
                                 output.append("-$DEL il terzo parametro o deve essere vuoto oppure la lista di posti da eliminare");
                         } else output.append("-$DEL il secondo parametro deve l'id della prenotazione");
                     }
                 }
             }
-            before = true;
-        }while ((command = command.getNext()) != null);
+            aggiungiLimitatore = true;
+        }while ((comando = comando.getNext()) != null);
 
         this.sendMessage("[" + output + "]");
     }

@@ -34,7 +34,7 @@ public class commandRESP {
 
 
 
-    public bodyRESP getOperations() {
+    public bodyRESP getOperazione() {
         return operations;
     }
 
@@ -44,6 +44,10 @@ public class commandRESP {
 
     public String getAction() {
         return action;
+    }
+
+    public boolean isError() {
+        return this.action.startsWith("-");
     }
 }
 
