@@ -1,4 +1,4 @@
-package database.cheatsheet.client;
+package clientWeb.utils.client;
 
 import java.io.*;
 import java.net.Socket;

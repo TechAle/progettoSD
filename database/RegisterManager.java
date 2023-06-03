@@ -1,6 +1,6 @@
 package database;
 
-import database.utils.structure.proiezione;
+import database.structure.proiezione;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

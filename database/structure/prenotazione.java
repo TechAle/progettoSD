@@ -1,4 +1,4 @@
-package database.utils.structure;
+package database.structure;
 
 public record prenotazione(int idPrenotazione, int posto) {
     @Override

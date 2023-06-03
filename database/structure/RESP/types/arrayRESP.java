@@ -1,6 +1,6 @@
-package database.utils.structure.types;
+package database.structure.RESP.types;
 
-import database.utils.structure.bodyRESP;
+import database.structure.RESP.bodyRESP;
 
 public class arrayRESP extends bodyRESP {
 

@@ -1,4 +1,4 @@
-package database.utils.structure;
+package database.structure;
 
 import java.util.ArrayList;
 import java.util.List;

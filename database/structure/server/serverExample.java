@@ -1,8 +1,8 @@
-package database.examples;
+package database.structure.server;
 
 import database.RegisterManager;
-import database.cheatsheet.server.tcpServer;
-import database.cheatsheet.server.tcpSlave;
+import database.utils.server.tcpServer;
+import database.utils.server.tcpSlave;
 
 public class serverExample extends tcpServer {
 

@@ -1,4 +1,4 @@
-package database.cheatsheet.server;
+package database.utils.server;
 
 
 import java.io.IOException;

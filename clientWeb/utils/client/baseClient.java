@@ -1,4 +1,4 @@
-package database.cheatsheet.client;
+package clientWeb.utils.client;
 
 /**
  * Classe base per un client socket

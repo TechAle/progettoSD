@@ -1,4 +1,4 @@
-package database.utils.structure;
+package database.structure.RESP;
 
 public abstract class bodyRESP {
     protected Object value;

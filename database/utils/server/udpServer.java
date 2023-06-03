@@ -1,4 +1,6 @@
-package database.cheatsheet.server;
+package database.utils.server;
+
+import database.structure.server.message;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

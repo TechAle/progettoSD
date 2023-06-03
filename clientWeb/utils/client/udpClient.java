@@ -1,10 +1,9 @@
-package database.cheatsheet.client;
+package clientWeb.utils.client;
 
 import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.Socket;
 
 /**
  * Estendendolo permette una creazione di un client udp

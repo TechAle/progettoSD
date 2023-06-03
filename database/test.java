@@ -1,14 +1,14 @@
 package database;
 
-import database.utils.parserUtils;
-import database.utils.structure.bodyRESP;
-import database.utils.structure.commandRESP;
-import database.utils.structure.types.arrayRESP;
-import database.utils.structure.types.intRESP;
+import common.parserUtils;
+import database.structure.RESP.bodyRESP;
+import database.structure.RESP.commandRESP;
+import database.structure.RESP.types.arrayRESP;
+import database.structure.RESP.types.intRESP;
 
 import java.util.ArrayList;
 
-import static database.utils.parserUtils.getValuesArray;
+import static common.parserUtils.getValuesArray;
 
 public class test {
     public static void main(String[] args) {

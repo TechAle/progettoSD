@@ -1,9 +1,9 @@
-package database.utils;
+package common;
 
-import database.utils.structure.bodyRESP;
-import database.utils.structure.commandRESP;
-import database.utils.structure.types.arrayRESP;
-import database.utils.structure.types.intRESP;
+import database.structure.RESP.bodyRESP;
+import database.structure.RESP.commandRESP;
+import database.structure.RESP.types.arrayRESP;
+import database.structure.RESP.types.intRESP;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package database.cheatsheet.server;
+package database.structure.server;
 
 import java.net.InetAddress;
 
