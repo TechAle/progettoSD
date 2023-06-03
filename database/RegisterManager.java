@@ -1,6 +1,5 @@
 package database;
 
-import database.utils.structure.prenotazione;
 import database.utils.structure.proiezione;
 
 import java.io.BufferedReader;
@@ -25,8 +24,9 @@ public class RegisterManager {
             reader.readLine();
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                database.put(Integer.parseInt(parts[0].replaceAll(" ", "")),
-                            new proiezione(parts[1].replaceAll(" ", ""), Integer.parseInt(parts[2].replaceAll(" ", "")), parts[3]));
+                database.put(       Integer.parseInt(parts[0].replace(" ", "")),
+                                    new proiezione(parts[1].replace(" ", "").replace("+", "\\+").replace("-", "\\-"),
+                                    Integer.parseInt(parts[2].replaceAll(" ", "")), parts[3]));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -35,40 +35,36 @@ public class RegisterManager {
     }
 
     public String getStanze() {
-        StringBuilder output = new StringBuilder("+");
-        boolean before = false;
+        StringBuilder output = new StringBuilder("+[");
         for(int id : database.keySet()) {
-            if (before)
-                output.append("\r\n");
             output.append(String.format("%d%s", id, database.get(id).toString()));
-            before = true;
         }
-        return output.toString();
+        return output.append("]").toString();
     }
 
-    public String getPostiOccupati(int id) {
+    public String getStanza(int id) {
         if (database.containsKey(id)) {
-            return database.get(id).getPostiOccupati();
-        } else return "-Id inesistente";
+            return database.get(id).toString();
+        } else return "-$Id inesistente";
     }
 
     public String prenotaPosti(int id, int prenotazione, List<Integer> posti) {
         if (database.containsKey(id)) {
             return database.get(id).aggiungiPosti(posti, prenotazione);
-        } else return "-Id inesistente";
+        } else return "-$Id inesistente";
     }
 
     public String prenotaPosti(int id, List<Integer> posti) {
         if (database.containsKey(id)) {
             int idPrenotazione = database.get(id).generaIdPrenotazione();
             return database.get(id).aggiungiPosti(posti, idPrenotazione);
-        } else return "-Id inesistente";
+        } else return "-$Id inesistente";
     }
 
     public String rimuoviPosti(int id, int prenotazione) {
         if (database.containsKey(id)) {
             return database.get(id).rimuoviPosti(prenotazione);
-        }else return "-Id inesistente";
+        }else return "-$Id inesistente";
     }
 
     public String rimuoviPosti(int id, int prenotazione, List<Integer> posti) {
@@ -76,7 +72,7 @@ public class RegisterManager {
             return rimuoviPosti(id, prenotazione);
         if (database.containsKey(id)) {
             return database.get(id).rimuoviPosti(posti, prenotazione);
-        }else return "-Id inesistente";
+        }else return "-$Id inesistente";
     }
 
 

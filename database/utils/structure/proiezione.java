@@ -2,6 +2,8 @@ package database.utils.structure;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class proiezione {
     private final String nome;
@@ -35,22 +37,26 @@ public class proiezione {
     }
 
     public String getPostiOccupati() {
-        StringBuilder output = new StringBuilder();
-        for(prenotazione pren : this.postiOccupati)
-            output.append(pren.toString()).append("\r\n");
+        StringBuilder output = new StringBuilder("+[");
+        for(prenotazione pren : this.postiOccupati) {
+            output.append(pren.toString());
+        }
+        output.append("]");
         return output.toString();
     }
 
     public synchronized String aggiungiPosti(List<Integer> pren, int idPrenotazione) {
-        if (this.postiOccupati.size() + pren.size() <= posti)
-            return "-Non ci sono abbastanza posti";
+        if (this.postiOccupati.size() + pren.size() >= posti)
+            return "-$Non ci sono abbastanza posti";
         for(int prenCheck : pren)
             for(prenotazione occupati : this.postiOccupati)
                 if (occupati.posto() == prenCheck)
-                    return "-Qualche posto è già stato occupato";
+                    return "-$Qualche posto è già stato occupato";
+                else if (prenCheck > this.posti)
+                    return "-$Posto non esistente";
         for (int prenCheck : pren)
             this.postiOccupati.add(new prenotazione(idPrenotazione, prenCheck));
-        return "+Prenotazione effettuata con successo";
+        return "+$Prenotazione effettuata con successo";
     }
 
     public synchronized String rimuoviPosti(int idPrenotazione) {
@@ -62,8 +68,8 @@ public class proiezione {
                 removedOne = true;
             }
         return removedOne
-                ? "+Prenotazione rimossa con successo"
-                : "-Non è stata trovata nessuna prenotazione con id " + idPrenotazione;
+                ? "+$Prenotazione rimossa con successo"
+                : "-$Non è stata trovata nessuna prenotazione con id " + idPrenotazione;
     }
 
     public synchronized String rimuoviPosti(List<Integer> pren, int idPrenotazione) {
@@ -73,35 +79,41 @@ public class proiezione {
                 if (prenCheck.posto() == toCheck) {
                     for(prenotazione addedBefore : toRemove)
                         if (addedBefore.posto() == prenCheck.posto())
-                            return "-Sono stati trovati dei posti duplicati";
+                            return "-$Sono stati trovati dei posti duplicati";
                     if (prenCheck.idPrenotazione() != idPrenotazione)
-                        return "-Questa non è una tua prenotazione";
+                        return "-$Questa non è una tua prenotazione";
                     toRemove.add(prenCheck);
                     break;
                 }
         if (toRemove.size() == pren.size()) {
             while (!toRemove.isEmpty())
                 this.postiOccupati.remove(toRemove.remove(0));
-        } else return "-Sono stati inseriti posti non esistenti";
-        return "+Posti rimossi con successo";
+        } else return "-$Sono stati inseriti posti non esistenti";
+        return "+$Posti rimossi con successo";
     }
 
     @Override
     public String toString() {
         StringBuilder postiOccupatiSTR = new StringBuilder();
-        boolean first = true;
         for(prenotazione pren : postiOccupati) {
-            if (!first)
-                postiOccupatiSTR.append(',');
             postiOccupatiSTR.append(pren);
-            first = false;
         }
         return String.format("$%s:%s[%s]", nome, posti, postiOccupatiSTR);
     }
 
-    // TODO
     public int generaIdPrenotazione() {
-        return 0;
+        Set<Integer> set = new TreeSet<>();
+        for(prenotazione pren : this.postiOccupati)
+            set.add(pren.idPrenotazione());
+        int min = 0;
+        for(int value : set) {
+            if (value == min)
+                min++;
+            else
+                return min;
+        }
+
+        return min;
     }
 }
 

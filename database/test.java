@@ -10,27 +10,34 @@ import java.util.ArrayList;
 
 public class test {
     public static void main(String[] args) {
-        commandRESP command = parserUtils.parseRedis("[VIEW:1\r\nDEL:48:0\r\nADD:10:1[:0:1]]");
+        testCommand();
+
+    }
+
+    static void testCommand() {
+        commandRESP command = parserUtils.parseRedisCommand("[VIEW:48\r\nDEL:48:0[:4]\r\nADD:10:1[:0:1]]");
         String firstAction = command.getAction();
         if (firstAction.startsWith("-")) {
             System.out.println("[" + firstAction + "]");
             return;
         }
         StringBuilder output = new StringBuilder();
+        boolean before = false;
         do {
+            if (before)
+                output.append("\r\n");
             switch (command.getAction()) {
-                case "VIEW":
+                case "VIEW" -> {
                     if (command.getOperations() == null)
                         output.append(RegisterManager.getInstance().getStanze());
                     else if (command.getOperations() instanceof intRESP)
-                        output.append(RegisterManager.getInstance().getPostiOccupati(((intRESP) command.getOperations()).getValue()));
-                    int a = 0;
-                    break;
-                case "ADD":
+                        output.append(RegisterManager.getInstance().getStanza(((intRESP) command.getOperations()).getValue()));
+                }
+                case "ADD" -> {
                     if (command.getOperations() == null)
-                        output.append("-ADD deve per forza avere un body");
+                        output.append("-$ADD deve per forza avere un body");
                     else if (!(command.getOperations() instanceof intRESP))
-                        output.append("-ADD deve avere come primo parametro l'id della stanza");
+                        output.append("-$ADD deve avere come primo parametro l'id della stanza");
                     else {
                         bodyRESP nextCheck = command.getOperations().getNext();
                         ArrayList<Integer> array;
@@ -56,17 +63,18 @@ public class test {
                                 }
                                 output.append(RegisterManager.getInstance().prenotaPosti(
                                         ((intRESP) command.getOperations()).getValue(),
-                                        ((intRESP)command.getOperations().getNext()).getValue(),
-                                          array));
-                            } else output.append("-ADD il terzo parametro vede rappresentare i posti da prenotare");
-                        } else output.append("-ADD il secondo parametro deve essere o i posti da prenotare oppure  l'id della prenotazione");
+                                        ((intRESP) command.getOperations().getNext()).getValue(),
+                                        array));
+                            } else output.append("-$ADD il terzo parametro vede rappresentare i posti da prenotare");
+                        } else
+                            output.append("-$ADD il secondo parametro deve essere o i posti da prenotare oppure  l'id della prenotazione");
                     }
-                    break;
-                case "DEL":
+                }
+                case "DEL" -> {
                     if (command.getOperations() == null)
-                        output.append("-DEL deve per forza avere un body");
+                        output.append("-$DEL deve per forza avere un body");
                     else if (!(command.getOperations() instanceof intRESP))
-                        output.append("-DEL deve avere come primo parametro l'id della stanza");
+                        output.append("-$DEL deve avere come primo parametro l'id della stanza");
                     else {
                         bodyRESP nextCheck = command.getOperations().getNext();
                         ArrayList<Integer> array;
@@ -81,20 +89,21 @@ public class test {
                                 }
                                 output.append(RegisterManager.getInstance().rimuoviPosti(
                                         ((intRESP) command.getOperations()).getValue(),
-                                        ((intRESP)command.getOperations().getNext()).getValue(),
+                                        ((intRESP) command.getOperations().getNext()).getValue(),
                                         array));
                             } else if (nextCheck == null) {
                                 output.append(RegisterManager.getInstance().rimuoviPosti(
                                         ((intRESP) command.getOperations()).getValue(),
-                                        ((intRESP)command.getOperations().getNext()).getValue()));
-                            } else output.append("-DEL il terzo parametro o deve essere vuoto oppure la lista di posti da eliminare");
-                        } else output.append("-DEL il secondo parametro deve l'id della prenotazione");
+                                        ((intRESP) command.getOperations().getNext()).getValue()));
+                            } else
+                                output.append("-$DEL il terzo parametro o deve essere vuoto oppure la lista di posti da eliminare");
+                        } else output.append("-$DEL il secondo parametro deve l'id della prenotazione");
                     }
-                    break;
+                }
             }
+            before = true;
         }while ((command = command.getNext()) != null);
 
         System.out.println("[" + output + "]");
-
     }
 }
