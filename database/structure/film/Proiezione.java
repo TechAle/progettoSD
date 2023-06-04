@@ -1,23 +1,26 @@
-package database.structure;
+package database.structure.film;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+
+import database.structure.Sala;
+
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
  * @author Alessandro Condello
  * @since 1/06/23
  * @last-modified 03/06/23
  */
-public class proiezione {
-    private final String nome;
-    private final int posti;
-    private final List<prenotazione> postiOccupati;
+public class Proiezione {
+    private final Film film;
+    private final Sala sala;
+    private final List<prenotazionePosto> postiOccupati;
+    private final LocalDateTime dateTime;
+    private final int id;
 
-    public proiezione(String nome, int posti, String postiOccupati) {
-        this.nome = nome;
-        this.posti = posti;
+    public Proiezione(Film film, Sala sala, String postiOccupati, String date, String hour, int id) {
+        this.film = film;
+        this.sala = sala;
         postiOccupati = postiOccupati.replaceAll(" ", "");
         postiOccupati = postiOccupati.substring(1, postiOccupati.length() -1);
         this.postiOccupati = new ArrayList<>();
@@ -26,24 +29,31 @@ public class proiezione {
                 value = value.substring(1, value.length() - 1);
                 int b = 0;
                 String[] values = value.split("\\.");
-                this.postiOccupati.add(new prenotazione(Integer.parseInt(values[0]), Integer.parseInt(values[1])));
+                this.postiOccupati.add(new prenotazionePosto(Integer.parseInt(values[0]), Integer.parseInt(values[1])));
             }
-
+        String[] dateSplitted = date.split("-");
+        String[] hourSplitted = hour.split(":");
+        this.dateTime = LocalDateTime.of(Integer.parseInt(dateSplitted[2]), Integer.parseInt(dateSplitted[1]), Integer.parseInt(dateSplitted[0]),
+                                         Integer.parseInt(hourSplitted[0]), Integer.parseInt(hourSplitted[1]), 0);
+        this.id = id;
         //this.postiOccupati = postiOccupati;
     }
 
+    public int getId() {
+        return id;
+    }
 
-    public String getNome() {
-        return nome;
+    public Film getFilmStructure() {
+        return film;
     }
 
     public int getPosti() {
-        return posti;
+        return sala.getPosti();
     }
 
     public String getPostiOccupati() {
         StringBuilder output = new StringBuilder("+[");
-        for(prenotazione pren : this.postiOccupati) {
+        for(prenotazionePosto pren : this.postiOccupati) {
             output.append(pren.toString());
         }
         output.append("]");
@@ -51,16 +61,16 @@ public class proiezione {
     }
 
     public synchronized String aggiungiPosti(List<Integer> pren, int idPrenotazione) {
-        if (this.postiOccupati.size() + pren.size() >= posti)
+        if (this.postiOccupati.size() + pren.size() >= sala.getPosti())
             return "-$Non ci sono abbastanza posti";
         for(int prenCheck : pren)
-            for(prenotazione occupati : this.postiOccupati)
+            for(prenotazionePosto occupati : this.postiOccupati)
                 if (occupati.posto() == prenCheck)
                     return "-$Qualche posto è già stato occupato";
-                else if (prenCheck > this.posti)
+                else if (prenCheck > this.sala.getPosti())
                     return "-$Posto non esistente";
         for (int prenCheck : pren)
-            this.postiOccupati.add(new prenotazione(idPrenotazione, prenCheck));
+            this.postiOccupati.add(new prenotazionePosto(idPrenotazione, prenCheck));
         return "+$Prenotazione effettuata con successo";
     }
 
@@ -78,11 +88,11 @@ public class proiezione {
     }
 
     public synchronized String rimuoviPosti(List<Integer> pren, int idPrenotazione) {
-        ArrayList<prenotazione> toRemove = new ArrayList<>();
+        ArrayList<prenotazionePosto> toRemove = new ArrayList<>();
         for(int toCheck : pren)
-            for(prenotazione prenCheck : this.postiOccupati)
+            for(prenotazionePosto prenCheck : this.postiOccupati)
                 if (prenCheck.posto() == toCheck) {
-                    for(prenotazione addedBefore : toRemove)
+                    for(prenotazionePosto addedBefore : toRemove)
                         if (addedBefore.posto() == prenCheck.posto())
                             return "-$Sono stati trovati dei posti duplicati";
                     if (prenCheck.idPrenotazione() != idPrenotazione)
@@ -100,15 +110,16 @@ public class proiezione {
     @Override
     public String toString() {
         StringBuilder postiOccupatiSTR = new StringBuilder();
-        for(prenotazione pren : postiOccupati) {
+        for(prenotazionePosto pren : postiOccupati) {
             postiOccupatiSTR.append(pren);
         }
-        return String.format("$%s:%s[%s]", nome, posti, postiOccupatiSTR);
+        return String.format("%s%s[%s]", film, sala.toString(), postiOccupatiSTR);
     }
 
+    // TODO rifare questo
     public int generaIdPrenotazione() {
         Set<Integer> set = new TreeSet<>();
-        for(prenotazione pren : this.postiOccupati)
+        for(prenotazionePosto pren : this.postiOccupati)
             set.add(pren.idPrenotazione());
         int min = 0;
         for(int value : set) {

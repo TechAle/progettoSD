@@ -17,7 +17,7 @@ public class test {
     }
 
     static void testCommand() {
-        commandRESP comando = parserUtils.parseRedisCommand("[VIEW:48\r\nDEL:48:0[:4]\r\nADD:10[:0:1]]");
+        commandRESP comando = parserUtils.parseRedisCommand("[VIEW:50\r\nDEL:1:0[:4]\r\nADD:2[:0:1]]");
         // Se la prima azione è un errore, allora vuol dire che c'è un problema con la sintassi del comando
         String primaAzione = comando.getAction();
         if (comando.isError()) {
