@@ -49,6 +49,8 @@ public class parserUtils {
         return first;
     }
 
+    // TODO  \\:
+    // TODO testing ricorsione
     /**
      * Questa è una funzione ricorsiva che ha come caso base quando i due indici si invertono.
      * Il funzionamento è il seguente:

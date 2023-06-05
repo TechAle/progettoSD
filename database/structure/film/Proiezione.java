@@ -116,7 +116,6 @@ public class Proiezione {
         return String.format("%s%s[%s]", film, sala.toString(), postiOccupatiSTR);
     }
 
-    // TODO rifare questo
     public int generaIdPrenotazione() {
         Set<Integer> set = new TreeSet<>();
         for(prenotazionePosto pren : this.postiOccupati)
