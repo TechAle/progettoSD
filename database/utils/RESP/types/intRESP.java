@@ -1,6 +1,6 @@
-package common.RESP.types;
+package database.utils.RESP.types;
 
-import common.RESP.bodyRESP;
+import database.utils.RESP.bodyRESP;
 
 /**
  * @author Alessandro Condello

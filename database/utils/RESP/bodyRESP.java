@@ -1,4 +1,4 @@
-package common.RESP;
+package database.utils.RESP;
 
 /**
  * @author Alessandro Condello

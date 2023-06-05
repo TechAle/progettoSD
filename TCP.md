@@ -6,8 +6,8 @@ Questo protocollo prende tanta ispirazione da [redis](https://redis.io/docs/abou
 - : precede sempre un intero
 - $ precede sempre una stringa
 - [ precede sempre un insieme di valori correlati tra di loro, e questa correlazione termina col carattere ] 
-## Richieste del clientWeb
-Tutte le richieste del clientWeb devono essere una lista di commandi.
+## Richieste del client-web
+Tutte le richieste del client-web devono essere una lista di commandi.
 I possibili commandi che il server accetta sono:
 - VIEW<br>Ritorna le seguenti informazioni di tutte le proiezioni: 
   - Id della proiezione (intero)

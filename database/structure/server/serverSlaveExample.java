@@ -3,16 +3,16 @@ package database.structure.server;
 import database.databaseManager;
 import database.utils.server.tcpServer;
 import database.utils.server.tcpSlave;
-import common.parserUtils;
-import common.RESP.bodyRESP;
-import common.RESP.commandRESP;
-import common.RESP.types.arrayRESP;
-import common.RESP.types.intRESP;
+import database.utils.parserUtils;
+import database.utils.RESP.bodyRESP;
+import database.utils.RESP.commandRESP;
+import database.utils.RESP.types.arrayRESP;
+import database.utils.RESP.types.intRESP;
 
 import java.net.Socket;
 import java.util.ArrayList;
 
-import static common.parserUtils.getValuesArray;
+import static database.utils.parserUtils.getValuesArray;
 
 /**
  * @author Alessandro Condello
