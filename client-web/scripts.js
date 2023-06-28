@@ -2,21 +2,33 @@ var API_URI = "http://localhost:8080";
 var zonaFilm= document.querySelector("#locandina");
 var zonaPrenotazioni = document.querySelector("#sala table");
 var postiScelti = [];
-var modifica = false;
+
 
 var films = [
-    {title: "Non aprite quella porta", author: "a", publish: "2022", time: "a", description: "...che è dell'ufficio di Antoniotti", posti: 250},
-    {title: "Mine", author: "a", publish: "a", time: "a", description: "Il protagonista dovrà affrontare diverse insidie.. per creare il proprio progetto di SD", posti: 220},
-    {title: "Wild University", author: "a", publish: "2020", time: "a", description: "Documentario sulla routine quotidiana degli studenti di Informatica dell'UniMiB", posti: 125},
-    {title: "300", author: "a", publish: "2023", time: "120 min", description: "Storia di valorosi eroi che sono siusciti a resistere al progetto di LP", posti: 300},
-    {title: "Terminator", author: "a", publish: "2022", time: "a", description: "Sorrenti è venuto dal futuro e minaccia l'esistenza dell'Università! Riuscirà il Sig. Ferretti a salvarla?", posti: 160},
-    {title: "Fuga da RSAD", author: "Marco Mobilio", publish: "2023", time: "a", description:"", posti: 280},
-    {title: "Apocalypto", author: "a", publish: "a", time: "a", description: "Una matricola lotta per la propria vita contro un gruppo di docenti di GAL. Poi arrivano i maranza...", posti: 140},
-    {title: "The Hunger Games", author: "a", publish: "8 giugno 2023", time: "a", description: "24 pendolari universitari, di 12 facoltà diverse, rimangono intrappolati in un treno fermo sui binari, mentre si recano alla loro università preferita. Osservati dai dipendenti di Trenord, inizieranno una dura lotta per la sopravvivenza. Solo uno rimarrà vivo... forse", posti: 300},
-    {title: "Mission Impossible - Protocollo fantasma", author: "a", publish: "2022", time: "a", description: "Riuscirà il nostro eroe ad uscire dalla lezione dell'Avitabile senza essere visto?", posti: 320},
-    {title: "Un film da non vedere", author: "Domenico Giorgio Sorrenti", publish: "2022", time: "a", description: "Sperando di non sembrare troppo cattivo: invece di pensare a delle descrizioni per questo film, non sarebbe stato meglio utilizzare quel poco tempo per approfondire come si implementa in CMOS una porta And a 6 ingressi oppure quanta approssimazione c'è tra un numero in virgola mobile ed il successivo quando stiamo rappresentando valori attorno a 2425.32?", posti: 0}
+    {id: 1, nome: "Non aprite quella porta", descrizione: "...che è dell'ufficio di Antoniotti", sala: "Sala 1", orario:"10:30", posti: 250},
+    {id: 2, nome: "Mine", descrizione: "Il protagonista dovrà affrontare diverse insidie.. per creare il proprio progetto di SD", sala: "Sala 2", orario:"9:45", posti: 220},
+    {id: 3, nome: "Wild University", descrizione: "Documentario sulla routine quotidiana degli studenti di Informatica dell'UniMiB", sala: "a", orario:"a", posti: 125},
+    {id: 4, nome: "300", descrizione: "Storia di valorosi eroi che sono siusciti a resistere al progetto di LP", sala: "a", orario:"a", posti: 300},
+    {id: 5, nome: "Terminator", descrizione: "Sorrenti è venuto dal futuro e minaccia l'esistenza dell'Università! Riuscirà il Sig. Ferretti a salvarla?", sala: "a", orario:"a", posti: 160},
+    {id: 6, nome: "Fuga da RSAD", descrizione:"a", sala: "a", orario:"a", posti: 280},
+    {id: 7, nome: "Apocalypto", descrizione: "Una matricola lotta per la propria vita contro un gruppo di docenti di GAL. Poi arrivano i maranza...", sala: "a", orario:"a", posti: 140},
+    {id: 8, nome: "The Hunger Games", descrizione: "24 pendolari universitari, di 12 facoltà diverse, rimangono intrappolati in un treno fermo sui binari, mentre si recano alla loro università preferita. Osservati dai dipendenti di Trenord, inizieranno una dura lotta per la sopravvivenza. Solo uno rimarrà vivo... forse", sala: "a", orario:"a", posti: 300},
+    {id: 9, nome: "Mission Impossible - Protocollo fantasma", descrizione: "Riuscirà il nostro eroe ad uscire dalla lezione dell'Avitabile senza essere visto?", sala: "a", orario:"a", posti: 320},
+    {id: 10, nome: "Un film da non vedere", descrizione: "Sperando di non sembrare troppo cattivo: invece di pensare a delle descrizioni per questo film, non sarebbe stato meglio utilizzare quel poco tempo per approfondire come si implementa in CMOS una porta And a 6 ingressi oppure quanta approssimazione c'è tra un numero in virgola mobile ed il successivo quando stiamo rappresentando valori attorno a 2425.32?", sala: "a", orario:"a", posti: 0}
   ];
 
+var prenotazioniFake = [
+    [2, 10],
+    [4, 10],
+    [1, 3],
+    [3, 10],
+    [22, 10],
+    [11, 4],
+    [23, 10],
+    [40, 1],
+    [7, 4],
+    [24, 10]
+]
 //Chiamate GET
 async function getProiezioni(){                                 
     let response = await fetch(`${API_URI}/proiezioni`);          
@@ -25,34 +37,83 @@ async function getProiezioni(){
     }
     return await response.json();                                 
 }
-async function getProiezione(id){
+async function getPrenotazioni(id){
     let response = await fetch(`${API_URI}/proiezioni/${id}`);
     if(!response.ok){
         throw new Error (`${response.status} ${response.statusText}`)
     }
     return await response.json();
 }
+async function getPrenotazione(idProiezione, idPrenotazione){                                 
+    let response = await fetch(`${API_URI}/proiezioni/${idProiezione}/${idPrenotazione}`);          
+    if(!response.ok){                                             
+        throw new Error (`${response.status} ${response.statusText}`)
+    }
+    return await response.json();                                 
+}
+//invio i posti che vorrei prenotare al server, chiamata POST
+/*async function inviaPrenotazione(idProiezione){
+    const endpoint = `${API_URI}/films/${idProiezione}`
+    const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify(postiScelti)
+    });
+    if(!response.ok)
+        throw new Error(`${response.status} ${response.statusText}`);
+        return;
+    const location = response.headers.get("Location");
+    postiScelti = [];
+    return location.split("/").pop();
+}
+
+//chiamata PUT
+async function modificaPrenotazione(idProiezione, idPrenotazione){
+    const endpoint = `${API_URI}/films/${idProiezione}/${idPrenotazione}`
+    const response = await fetch(endpoint, {
+        method: "PUT",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify(postiScelti)
+    });
+    if(!response.ok){
+        throw new Error(`${response.status} ${response.statusText}`);
+        return;
+    }
+}
+
+//chiamata DELETE
+async function eliminaPrenotazione(idProiezione, idPrenotazione){
+    const endpoint = `${API_URI}/films/${idProiezione}/${idPrenotazione}`
+    const response = await fetch(endpoint, {
+        method: "DELETE"
+    });
+    if(!response.ok){
+        throw new Error(`${response.status} ${response.statusText}`);
+        return;
+    }
+}*/
 
 function createCard(film){                                  //Gestione creazione locandine
     let elem = document.createElement("div");
     elem.className="card";
     let head = document.createElement("div");
     head.className="filmTitle";
-    head.appendChild(document.createTextNode(film["title"]));
+    head.appendChild(document.createTextNode(film["nome"]));
     elem.appendChild(head);
     let body = document.createElement("div");
     body.className="illusion";
     let a = document.createElement("p");
-    a.appendChild(document.createTextNode(film["author"]));
+    a.appendChild(document.createTextNode(film["descrizione"]));
     body.appendChild(a);
     a = document.createElement("p");
-    a.appendChild(document.createTextNode(film["publish"]));
+    a.appendChild(document.createTextNode(film["sala"]));
     body.appendChild(a);
     a = document.createElement("p");
-    a.appendChild(document.createTextNode(film["time"]));
-    body.appendChild(a);
-    a = document.createElement("p");
-    a.appendChild(document.createTextNode(film["description"]));
+    a.appendChild(document.createTextNode(film["orario"]));
     body.appendChild(a);
     a = document.createElement("button");
     a.appendChild(document.createTextNode("Prenota Visione"));
@@ -99,11 +160,25 @@ function modificaPosto(posto, numero){
             console.log("errore");
             return;
         }
-        postiScelti[i] = postiScelti[postiScelti.length];
+        postiScelti[i] = postiScelti[postiScelti.length - 1];
         postiScelti.pop();
     }
     else if(posto.className == "seat"){
         posto.className = "selected";
+        postiScelti.push(numero);
+    }
+    else if(posto.className == "autobook"){
+        posto.className = "leave";
+        let i = postiScelti.indexOf(numero);
+        if(i == -1){
+            console.log("errore");
+            return;
+        }
+        postiScelti[i] = postiScelti[postiScelti.length - 1];
+        postiScelti.pop();
+    }
+    else if(posto.className == "leave"){
+        posto.className = "autobook";
         postiScelti.push(numero);
     }
 }
@@ -176,57 +251,55 @@ function mostraProiezioni(){
 }
 
 /*async*/function init(){
+    document.getElementById("cerca-prenotazione").addEventListener("submit",trovaPrenotazione)
     aggiornaFilm();
     mostraProiezioni();
 }
 
-//invio i posti che vorrei prenotare al server, chiamata POST
-/*async function inviaPrenotazione(idProiezione){
-    const endpoint = `${API_URI}/films/${idProiezione}`
-    const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-            "Content-type": "application/json"
-        },
-        body: JSON.stringify(postiScelti)
-    });
-    if(!response.ok)
-        throw new Error(`${response.status} ${response.statusText}`);
-        return;
-    const location = response.headers.get("Location");
-    postiScelti = [];
-    return location.split("/").pop();
-}
-
-//chiamata PUT
-async function modificaPrenotazione(idProiezione, idPrenotazione){
-    const endpoint = `${API_URI}/films/${idProiezione}/${idPrenotazione}`
-    const response = await fetch(endpoint, {
-        method: "PUT",
-        headers: {
-            "Content-type": "application/json"
-        },
-        body: JSON.stringify(postiScelti)
-    });
-    if(!response.ok){
-        throw new Error(`${response.status} ${response.statusText}`);
-        return;
-    }
-}
-
-//chiamata DELETE
-async function eliminaPrenotazione(idProiezione, idPrenotazione){
-    const endpoint = `${API_URI}/films/${idProiezione}/${idPrenotazione}`
-    const response = await fetch(endpoint, {
-        method: "DELETE"
-    });
-    if(!response.ok){
-        throw new Error(`${response.status} ${response.statusText}`);
-        return;
-    }
-}*/
 function inviaPrenotazione(idProiezione){
     console.log("Invio in corso");
     postiScelti=[];
     return 10;
+}
+
+function trovaPrenotazione(){
+    event.preventDefault();
+    let iden = document.getElementById("input-id")
+    let idPren = iden.value;
+    iden.value = "";
+    mostraPrenotazione(prenotazioniFake, idPren);
+}
+
+function mostraPrenotazione(postiPrenotati, prenotazione){
+    postiPrenotati.sort(function(a, b){
+        return a[0] - b[0];
+    });
+    postiScelti = [];
+    let righe = zonaPrenotazioni.childNodes;
+    let n = 0;
+    for(let i of righe){
+        let celle = i.childNodes;
+        for(let j of celle){
+            if(n == postiPrenotati[0][0]){
+                if(prenotazione == postiPrenotati[0][1]){
+                    j.className = "autobook";
+                    postiScelti.push(postiPrenotati[0][0]);
+                }
+                else{
+                    j.className = "booked";
+                }
+                postiPrenotati.shift();
+                if(postiPrenotati.length == 0){
+                    document.querySelectorAll(".seat").forEach(block);
+                    return;
+                }
+            }
+            else j.className = "booked";
+            n++;
+        }
+    }
+}
+
+function block(cella){
+    cella.className = "booked";
 }

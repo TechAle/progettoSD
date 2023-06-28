@@ -10,7 +10,7 @@ body{
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
     background-color: rgb(172, 219, 248);
-    color: aliceblue;
+    color: rgb(0,0,80);
 }
 
 #topnav{
@@ -29,6 +29,7 @@ body{
     border-radius: 0;
     background-color: inherit;
     font-size: 100%;
+    color: aliceblue;
 }
 
 #topnav .voice{
@@ -44,7 +45,7 @@ body{
 }
 
 #topnav-space{
-    height: 6.4vh;
+    height: 6.2vh;
 }
 
 .miniRect{
@@ -53,6 +54,10 @@ body{
     background-color: blueviolet;
     display: block;
     margin: 6px;
+}
+
+#prenotazioni{
+    padding: 10px;
 }
 
 #locandina{
@@ -127,9 +132,10 @@ footer{
     background-color: rgb(0,0,80);
     padding: 10px;
     text-align: center;
+    color: aliceblue;
 }
 
-button{
+.illusion button{
     transform: skew(-20deg);
     background-color:midnightblue;
     color: aliceblue;
@@ -151,27 +157,36 @@ button{
 }
 
 .booked svg{
-    fill: red;
-}
-.booked:hover svg{
-    fill: red;
+    fill: darkred;
 }
 
 .autobook svg{
     fill: green;
 }
 .autobook:hover svg{
-    fill: green;
+    fill: aliceblue;
+}
+
+.leave svg{
+    fill: lightgreen;
+}
+.leave:hover svg{
+    fill: aliceblue;
 }
 
 #invio{
-    margin: 4px 0;
+    margin: auto;
+    padding: 2px;
     transform: none;
     background-color: aliceblue;
     color: rgb(0,0,80);
     border: none;
     border-radius: 0;
     font-weight: bold;
+}
+
+form{
+    margin: 5px 0 15px 12px;
 }
 
 @media screen and (max-width: 1375px) {
