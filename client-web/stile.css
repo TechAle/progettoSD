@@ -1,0 +1,211 @@
+*{
+    box-sizing: border-box;
+}
+
+html{
+    scroll-behavior: smooth;
+}
+
+body{
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: rgb(172, 219, 248);
+    color: aliceblue;
+}
+
+#topnav{
+    background-color: rgb(0,0,80);
+    margin: 0;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    height: 6.2vh;
+}
+
+#topnav button{
+    border: none;
+    transform: none;
+    border-radius: 0;
+    background-color: inherit;
+    font-size: 100%;
+}
+
+#topnav .voice{
+    text-align: center;
+    float: left;
+    height: 100%;
+    padding: 1.6vh 15px;
+    font-size: 2.6vh;
+}
+
+#compacter{
+    display: none;
+}
+
+#topnav-space{
+    height: 6.4vh;
+}
+
+.miniRect{
+    height: 4px;
+    width: 30px;
+    background-color: blueviolet;
+    display: block;
+    margin: 6px;
+}
+
+#locandina{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 8px;
+}
+
+.item{
+    flex: 20%;
+    max-width: 20%;
+    padding: 12px;
+}
+
+.card{
+    display: flex;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.4);
+    aspect-ratio: 8 / 11;
+    transition: 0.2s;
+    position: relative;
+    background-image: linear-gradient(to top right, blue, rgb(0,0,106));
+    justify-content: center;
+    align-items: center;
+    color: aliceblue;
+}
+
+.card:hover .filmTitle{
+    color: rgba(0,0,0,0);
+}
+
+.card:hover .illusion{
+    opacity: 1;
+}
+
+.illusion{
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.3);
+    text-align: center;
+    transition: 0.3s;
+    padding: 0 2%;
+}
+
+.filmTitle{
+    color: white;
+    position: absolute;
+    font-size: 1.4vw;
+    text-align: center;
+    top: 50%;
+    transform: translate(0, -50%);
+    transition: color 0.3s;
+}
+
+#sala{
+    display: flex;
+    justify-content: center;
+}
+
+table{
+    border-collapse: collapse;
+}
+
+td{
+    border: 1px solid white;
+    padding: 4px;
+}
+
+footer{
+    background-color: rgb(0,0,80);
+    padding: 10px;
+    text-align: center;
+}
+
+button{
+    transform: skew(-20deg);
+    background-color:midnightblue;
+    color: aliceblue;
+    border-radius: 11% / 32% 0;
+}
+
+.seat svg{
+    fill: black;
+}
+.seat:hover svg{
+    fill: aliceblue;
+}
+
+.selected svg{
+    fill: blue;
+}
+.selected:hover svg{
+    fill: aliceblue;
+}
+
+.booked svg{
+    fill: red;
+}
+.booked:hover svg{
+    fill: red;
+}
+
+.autobook svg{
+    fill: green;
+}
+.autobook:hover svg{
+    fill: green;
+}
+
+#invio{
+    margin: 4px 0;
+    transform: none;
+    background-color: aliceblue;
+    color: rgb(0,0,80);
+    border: none;
+    border-radius: 0;
+    font-weight: bold;
+}
+
+@media screen and (max-width: 1375px) {
+    .item{
+        flex: 33.3333%;
+        max-width: 33.3333%;
+    }
+    .filmTitle{
+        font-size: 2.3333vw;
+    }
+}
+
+@media screen and (max-width: 850px){
+    .item{
+        flex: 50%;
+        max-width: 50%;
+    }
+    .filmTitle{
+        font-size: 3.5vw;
+    }
+}
+
+@media screen and (max-width: 550px){
+    #compacter{
+        float: right;
+        display: block;
+        height: 100%;
+        aspect-ratio: 1 / 1;
+    }
+    .item{
+        flex: 100%;
+        max-width: 100%;
+    }
+    .filmTitle{
+        font-size: 7vw;
+    }
+}
