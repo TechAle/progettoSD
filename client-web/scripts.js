@@ -63,6 +63,9 @@ async function getProiezioni(){
 async function getPrenotazioni(id){
     let response = await fetch(`${API_URI}/proiezioni/${id}`);
     if(!response.ok){
+        if(response.status == 404){
+            throw new Error("Errore: film inesistente");
+        }
         throw new Error (`${response.status} ${response.statusText}`)
     }
     let a = await response.json();
@@ -103,6 +106,9 @@ async function modificaPrenotazione(idProiezione, idPrenotazione){
         body: JSON.stringify(postiScelti)               //invio i posti da mantenere
     });
     if(!response.ok){
+        if(response.status == 404){
+            throw new Error("Errore in aggiornamento: prenotazione non trovata")
+        }
         throw new Error(`${response.status} ${response.statusText}`);
     }
 }
@@ -114,6 +120,9 @@ async function eliminaPrenotazione(idProiezione, idPrenotazione){
         method: "DELETE"
     });
     if(!response.ok){
+        if(response.status == 404){
+            throw new Error("Errore: prenotazione inesistente")
+        }
         throw new Error(`${response.status} ${response.statusText}`);
     }
 }
