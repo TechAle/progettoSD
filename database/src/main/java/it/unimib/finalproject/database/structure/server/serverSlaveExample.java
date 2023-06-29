@@ -58,7 +58,7 @@ public class serverSlaveExample extends tcpSlave {
                     if (comando.getOperazione() == null)
                         output.append(databaseManager.getInstance().getStanze());
                     else if (comando.getOperazione() instanceof intRESP)
-                        output.append(databaseManager.getInstance().getStanza(
+                        output.append(databaseManager.getInstance().getPrenotazione(
                                 ((intRESP) comando.getOperazione()).getValue())
                         );
                 }

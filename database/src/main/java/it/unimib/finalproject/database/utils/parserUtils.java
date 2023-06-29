@@ -12,7 +12,7 @@ import java.util.Collections;
 /**
  * @author Alessandro Condello
  * @since 1/06/23
- * @last-modified 03/06/23
+ * @last-modified 29/06/23
  */
 public class parserUtils {
 
@@ -33,10 +33,15 @@ public class parserUtils {
             if (indexIniziale == -1) // Non è stata trovata l'azione
                 return new commandRESP("-$Azione non trovata");
             // Crea la struttura
-            bodyRESP body = parserBody(operation, indexIniziale, operation.length(), null);
+            bodyRESP body;
+            try {
+                 body = parserBody(operation, indexIniziale, operation.length(), null);
+            } catch (StackOverflowError e) {
+                return new commandRESP("-$Errore sintassi");
+            }
             // Vari errori
-            if (body == null) return new commandRESP("-$Errore nella sintassi");
-            else if (body.error)
+            if (body == null && !operation.equals("VIEW")) return new commandRESP("-$Errore sintassi");
+            else if (body != null && body.error)
                 return new commandRESP("-$" + body.getError());
             // Inizializzo l'output finale
             commandRESP output = new commandRESP(operation.substring(0, indexIniziale));
@@ -50,8 +55,6 @@ public class parserUtils {
         return first;
     }
 
-    // TODO  \\:
-    // TODO testing ricorsione
     /**
      * Questa è una funzione ricorsiva che ha come caso base quando i due indici si invertono.
      * Il funzionamento è il seguente:
@@ -175,6 +178,9 @@ public class parserUtils {
         return -1;
     }
 
+    /**
+     * Transform an arrayRESP into ArrayList getting only integers
+     */
     public static ArrayList<Integer> getValuesArray(arrayRESP input) {
         bodyRESP nextCheck = input.getValue();
         ArrayList<Integer> output = new ArrayList<>();
