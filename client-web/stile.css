@@ -177,7 +177,6 @@ footer{
 
 #invio{
     display: block;
-    margin: auto;
     padding: 8px 12px;
     transform: none;
     background-color: aliceblue;
@@ -188,10 +187,22 @@ footer{
     font-size: 18px;
 }
 
-#button-wrapper{
+#aggiorna{
+    display: block;
+    padding: 8px 12px;
+    transform: none;
+    background-color: aliceblue;
+    color: rgb(0,0,80);
+    border: none;
+    border-radius: 0;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.button-wrapper{
     display: flex;
     justify-content: center;
-    margin-top: 15px;
+    margin: 15px 0 8px 0;
 }
 
 form{
