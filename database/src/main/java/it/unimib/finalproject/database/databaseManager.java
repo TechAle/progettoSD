@@ -78,7 +78,7 @@ public class databaseManager {
     public String getStanze() {
         StringBuilder output = new StringBuilder("+[");
         for(Proiezione pro : this.proiezione)
-            output.append(pro.toString());
+            output.append("[").append(pro.toString()).append("]");
         return output.append("]").toString();
     }
 
