@@ -12,7 +12,7 @@ class film {
     constructor(identificativo, numeroPosti){
         this._id = identificativo;
         this._posti = numeroPosti;
-        this._occupati = getPrenotazioniFake(identificativo)
+        this._occupati = getPrenotazioni(identificativo)
     }
     //si occupa di fornire i posti di una sola prenotazione
     getOccupatiById(n){
@@ -65,8 +65,8 @@ async function getProiezioni(){
     return await response.json();                                 
 }
 //prende una lista di prenotazioni per un film, metodo GET
-async function getPrenotazioni(){
-    let response = await fetch(`${API_URI}/proiezioni/${current._id}`);
+async function getPrenotazioni(id){
+    let response = await fetch(`${API_URI}/proiezioni/${id}`);
     if(!response.ok){
         if(response.status === 404){
             throw new Error("Errore: film inesistente");
@@ -136,7 +136,7 @@ async function rimuoviPosti(idPrn){
         body: JSON.stringify({
             idPrenotazione: idPrn,
             idProiezione: current._id,
-            nuoviPosti: postiScelti
+            vecchiPosti: postiRimossi
         })
     });
     if(!response.ok){
@@ -145,23 +145,6 @@ async function rimuoviPosti(idPrn){
         }
         throw new Error(`${response.status} ${response.statusText}`);
     }
-}
-
-//chiamate finte
-function getProiezioniFake(){
-    return films;
-}
-function getPrenotazioniFake(a){
-    return prenotazioniFake;
-}
-function inviaPrenotazioneFake(a){
-    return 15;
-}
-function aggiungiPostiFake(b){
-    return;
-}
-function rimuoviPostiFake(b){
-    return;
 }
 
 function createCard(film){                                  //Gestione creazione locandine, in Proiezioni
@@ -330,13 +313,12 @@ function mostraProiezioni(){
 }
 
 //fetching dei film
-/*async*/function inserisciFilm(){
-    /*getProiezioni().then((films) => films.forEach(addFilm), (error) => alert("Caricamento film non riuscito"));*/
-    getProiezioniFake().forEach(addFilm);
+async function inserisciFilm(){
+    getProiezioni().then((films) => films.forEach(addFilm), (error) => alert("Caricamento film non riuscito"));
 }
 
 //inizializzazione pagina
-/*async*/function init(){
+async function init(){
     inserisciFilm();
     mostraProiezioni();
 }
@@ -344,7 +326,7 @@ function mostraProiezioni(){
 //azioni per l'invio della prenotazione sul film corrente
 function mandaPrenotazione(){
     console.log("Invio in corso");
-    let ris = inviaPrenotazioneFake();
+    let ris = inviaPrenotazione();
     postiScelti=[];
     return ris;
 }
@@ -397,10 +379,10 @@ function block(cella){
 
 function modifica(idPrenotazione){
     if(postiScelti.length != 0){
-        aggiungiPostiFake(idPrenotazione);
+        aggiungiPosti(idPrenotazione);
     }
     if(postiRimossi.length != 0){
-        rimuoviPostiFake(idPrenotazione);
+        rimuoviPosti(idPrenotazione);
     }
     alert("Prenotazione modificata con successo");
     postiScelti = [];
