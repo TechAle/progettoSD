@@ -1,6 +1,10 @@
 package it.unimib.finalproject.database.utils;
 
-
+/**
+ * @author Alessandro Condello
+ * @since 29/06/2023
+ * @last-modified 29/06/2023
+ */
 public class ReadWriteLock{
 
     private int readers = 0,
@@ -26,7 +30,7 @@ public class ReadWriteLock{
     }
 
 
-    public void unlockWrite(){
+    public synchronized void unlockWrite(){
         writers--;
         writerRequests--;
         notifyAll();

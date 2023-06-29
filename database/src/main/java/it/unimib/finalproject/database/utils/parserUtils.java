@@ -178,6 +178,9 @@ public class parserUtils {
         return -1;
     }
 
+    /**
+     * Transform an arrayRESP into ArrayList getting only integers
+     */
     public static ArrayList<Integer> getValuesArray(arrayRESP input) {
         bodyRESP nextCheck = input.getValue();
         ArrayList<Integer> output = new ArrayList<>();
