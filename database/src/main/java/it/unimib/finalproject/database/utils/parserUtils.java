@@ -40,7 +40,7 @@ public class parserUtils {
                 return new commandRESP("-$Errore sintassi");
             }
             // Vari errori
-            if (body == null && !operation.equals("VIEW")) return new commandRESP("-$Errore nella sintassi");
+            if (body == null && !operation.equals("VIEW")) return new commandRESP("-$Errore sintassi");
             else if (body != null && body.error)
                 return new commandRESP("-$" + body.getError());
             // Inizializzo l'output finale

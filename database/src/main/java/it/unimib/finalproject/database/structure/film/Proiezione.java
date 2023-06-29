@@ -122,7 +122,7 @@ public class Proiezione {
                     ? "+$Prenotazione rimossa con successo"
                     : "-$Non è stata trovata nessuna prenotazione con id " + idPrenotazione;
         }catch (InterruptedException ignored) {
-            output = "-Internal error";
+            output = "-$Internal error";
         }
         finally {
             this.locker.unlockWrite();
@@ -159,7 +159,7 @@ public class Proiezione {
             if (found && output.equals(""))
                 output = "+$Posti rimossi con successo";
         }catch (InterruptedException ignored) {
-            output = "-Internal Error";
+            output = "-$Internal Error";
         }finally {
             this.locker.unlockWrite();
         }
