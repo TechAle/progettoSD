@@ -1,6 +1,5 @@
 package it.unimib.finalproject.database;
 
-// TODO Semafori lettura scrittura
 import it.unimib.finalproject.database.utils.RESP.bodyRESP;
 import it.unimib.finalproject.database.utils.RESP.commandRESP;
 import it.unimib.finalproject.database.utils.RESP.types.arrayRESP;
@@ -14,7 +13,10 @@ import static it.unimib.finalproject.database.utils.parserUtils.getValuesArray;
 
 public class test {
     public static void main(String[] args) {
-        testCommand();
+
+
+
+        //testCommand();
     }
 
     static void testCommand() {
