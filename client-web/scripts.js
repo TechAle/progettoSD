@@ -21,6 +21,7 @@ class film {
 
 var current;                            //utilizzo per il film
 
+//variabili di prova
 var films = [
     {id: 1, nome: "Non aprite quella porta", descrizione: "...che è dell'ufficio di Antoniotti", sala: "Sala 1", orario:"10:30", posti: 250},
     {id: 2, nome: "Mine", descrizione: "Il protagonista dovrà affrontare diverse insidie.. per creare il proprio progetto di SD", sala: "Sala 2", orario:"9:45", posti: 220},
@@ -33,7 +34,6 @@ var films = [
     {id: 9, nome: "Mission Impossible - Protocollo fantasma", descrizione: "Riuscirà il nostro eroe ad uscire dalla lezione dell'Avitabile senza essere visto?", sala: "a", orario:"a", posti: 320},
     {id: 10, nome: "Un film da non vedere", descrizione: "Sperando di non sembrare troppo cattivo: invece di pensare a delle descrizioni per questo film, non sarebbe stato meglio utilizzare quel poco tempo per approfondire come si implementa in CMOS una porta And a 6 ingressi oppure quanta approssimazione c'è tra un numero in virgola mobile ed il successivo quando stiamo rappresentando valori attorno a 2425.32?", sala: "a", orario:"a", posti: 0}
   ];
-
 var prenotazioniFake = [
     [2, 10],
     [4, 10],
@@ -45,7 +45,7 @@ var prenotazioniFake = [
     [40, 1],
     [7, 4],
     [24, 10]
-]
+] //coppie <posto, prenotazione>
 
 //Chiamate GET
 async function getProiezioni(){                                 //usata nella init e nell'aggiornamento
@@ -205,23 +205,18 @@ function mostraPrenotazioni(posti, id){
     document.getElementById("invio").appendChild(document.createTextNode("Invia Prenotazione"));
     document.getElementById("cerca-prenotazione").addEventListener("submit",trovaPrenotazione)
     document.getElementById("invio").addEventListener("click", function(){
-        /*try{
-            let a = inviaPrenotazione(id);
-            alert(a);
-            mostraProiezioni();
-        } catch(error) {
-            alert("Errore all'invio nella prenotazione");
-        }*/
         if(postiScelti.length == 0){
-            alert("Nessuna prenotazione inviata");
+            alert("Nessuna prenotazione inviata: non hai selezionato nessun posto");
         }
         else{
+            /*try{*/
             let a = inviaPrenotazioneFake(id);
             alert("Il numero di prenotazione è: " + a);
+            mostraProiezioni();
+            /*} catch(error) {
+                alert("Errore all'invio della prenotazione")
+            }*/
         }
-        //sostituisco il bottone con un suo clone per eliminare i gestori di eventi
-        eliminaHandlers()
-        mostraProiezioni();
     })
 }
 
@@ -305,17 +300,18 @@ function mostraProiezioni(){
     document.getElementById("proiezioni").hidden = false;
     document.getElementById("prenotazioni").hidden = true;
     zonaPrenotazioni.innerHTML="";
+    eliminaHandlers();
 }
 
 //fetching dei film
-/*async*/function aggiornaFilm(){
+/*async*/function inserisciFilm(){
     /*getProiezioni().then((films) => films.forEach(addFilm), (error) => alert("Caricamento film non riuscito"));*/
     getProiezioniFake().forEach(addFilm);
 }
 
 //inizializzazione pagina
 /*async*/function init(){
-    aggiornaFilm();
+    inserisciFilm();
     mostraProiezioni();
 }
 
@@ -337,7 +333,8 @@ function trovaPrenotazione(){
     if(a.length == 0){
         alert("Nessuna prenotazione trovata per questa proiezione")
     }
-    else{//<----------------------------------
+    else{
+        document.querySelectorAll("td").forEach(block);
         mostraPrenotazione(a);
         eliminaHandlers();
         let e = document.getElementById("invio");
@@ -362,11 +359,9 @@ function mostraPrenotazione(postiPrenotati){
                 j.className = "autobook";
                 postiPrenotati.shift(); 
                 if(postiPrenotati.length == 0){
-                    document.querySelectorAll(".seat").forEach(block);
                     return;
                 }
             }
-            else j.className = "booked";
             n++;
         }
     }
@@ -386,7 +381,6 @@ function modifica(idPrenotazione){
         postiScelti = [];
         alert("Prenotazione modificata con successo");
     }
-    eliminaHandlers();
     mostraProiezioni();
 }
 
@@ -394,4 +388,9 @@ function eliminaHandlers(){                         //relativo solo al pulsante 
     let old = document.getElementById("invio");
     let newNode = old.cloneNode();
     old.parentNode.replaceChild(newNode, old);
+}
+
+function aggiornaFilm(){
+    zonaFilm.innerHTML="";
+    inserisciFilm();
 }

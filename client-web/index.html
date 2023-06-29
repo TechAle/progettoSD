@@ -23,7 +23,7 @@
       <h2>List of showings</h2>
       <div id = "locandina">
       </div>
-      <button>Aggiorna proiezioni</button>
+      <button onclick="aggiornaFilm()">Aggiorna proiezioni</button>
     </section>
     <section id="prenotazioni" hidden>
       <h2>Prenotazione posti</h2>
@@ -36,7 +36,7 @@
         <table>
         </table>
       </div>
-      <div style="margin-top: 10px;">
+      <div id="button-wrapper">
         <button id="invio"></button>
       </div>
     </section>
@@ -44,73 +44,7 @@
       Comotti Carlo Luca, Condello Alessandro, Elli Martina. Tutti i diritti riservati
     </footer>
     <script src="scripts.js"></script>
-    <script>/*
-      // newContactDOM viene eseguita all'invio del from. Aggiunge un nuovo
-      // contatto, prima inviandolo al server e poi mettendolo nella tabella.
-      async function newContactDOM(event) {
-        // Evito che il form venga davvero inviato.
-        event.preventDefault();
-        // Recuperi i dati da inviare dal form.
-        const name = document.getElementById("input-name");
-        const number = document.getElementById("input-number");
-        let contact = {
-          "name": name.value,
-          "number": number.value
-        };
-        // Pulisco i campi del form, ormai non servono più.
-        name.value = "";
-        number.value = "";
-        try {
-          // Creo il nuovo oggetto e lo invio al server, restituisce il
-          // nuovo ID.
-          contact["id"] = await newContact(contact)
-          // Ottengo il nuovo contatto con tutte le informazioni.
-          contact = await getContact(contact["id"]);
-          // Infine lo aggiungo alla tabella.
-          addContactDOM(contact);
-        } catch (error) {
-          onError("Failed to add a new user", error);
-        }
-      }
-      // addContactDOM aggiunge il contatto fornito in una nuova riga della tabella.
-      function addContactDOM(contact) {
-        // Selezione di <tbody> e aggiunta di una nuova riga.
-        const tbody = document.getElementById("table-body");
-        const row = tbody.insertRow();
-
-        // Aggiunta dell'ID.
-        const id = row.insertCell();
-        id.setAttribute("align", "center");
-        const idText = document.createTextNode(contact["id"]);
-        id.appendChild(idText);
-
-        // Aggiunta del nome.
-        const name = row.insertCell();
-        name.setAttribute("align", "center");
-        const nameText = document.createTextNode(contact["name"]);
-        name.appendChild(nameText);
-
-        // Aggiunta del numero.
-        const number = row.insertCell();
-        number.setAttribute("align", "center");
-        const numberText = document.createTextNode(contact["number"]);
-        number.appendChild(numberText);
-      }
-      /* Ho definito init come una funzione asincrona, per cui l'esecuzione è slegata
-         dal flusso sequenziale dello script. Il browser si occupa di gestire queste
-         funzioni, che prima o poi verranno eseguite e completate.
-      
-      async function init() {
-        // getUsers è asincrona, per cui restituisce una Promise che verrà eseguita
-        // in modo asincrono. Il metodo then permette di eseguire due funzioni: la
-        // prima in caso di successo, la seconda in caso di errore.
-        getContacts().then((users) => users.forEach(addContactDOM),
-          (error) => onError("Failed to get users", error));
-
-        // Aggiungo l'handler per l'evento di invio al form.
-        const form = document.getElementById("add-contact");
-        form.addEventListener("submit", newContactDOM);
-      }*/
+    <script>
       window.onload = init();
     </script>
   </body>
