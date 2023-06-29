@@ -35,15 +35,15 @@ public class queryAssembler {
 	 * @return query [ADD:idProiezione[:posto1:posto2:...]
 	 */
 	public static String generateAdd(int idProiezione, String posti){
-		//	Prima parte della query.
-		String query = "[ADD:";
-		//	Aggiunta id.
-		query += Integer.toString(idProiezione) + ":[";
 
 		//	Controllo che posti corrisponda ad una lista vuota:
 		//	in tal caso ritorno una stringa vuota per l'errore.
 		if(posti.length() == 2)
 			return "";
+
+		String query = "[ADD:";
+		//	Aggiunta id.
+		query += Integer.toString(idProiezione) + ":[";
 
 		//	Tolgo parentesi quadre dalla lista dei posti.
 		posti = posti.substring(1, posti.length() - 1);
@@ -66,16 +66,16 @@ public class queryAssembler {
 	 * @return query [ADD:idProiezione:idPrenotazione[:posto1:posto2:...]
 	 */
 	public static String generateAdd(int idProiezione, int idPrenotazione, String posti){
-		//	Prima parte della query.
-		String query = "[ADD:";
-		//	Aggiunta id.
-		query += Integer.toString(idProiezione) + ":";
-		query += Integer.toString(idPrenotazione) + ":[";
 
 		//	Controllo che posti corrisponda ad una lista vuota:
 		//	in tal caso ritorno una stringa vuota per l'errore.
 		if(posti.length() == 2)
-			return query += "";
+			return "";
+
+		String query = "[ADD:";
+		//	Aggiunta id.
+		query += Integer.toString(idProiezione) + ":";
+		query += Integer.toString(idPrenotazione) + ":[";
 
 		//	Tolgo parentesi quadre dalla lista dei posti.
 		posti = posti.substring(1, posti.length() - 1);
