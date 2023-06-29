@@ -3,6 +3,23 @@ var zonaFilm= document.querySelector("#locandina");
 var zonaPrenotazioni = document.querySelector("#sala table");
 var postiScelti = [];
 
+class film {
+    constructor(identificativo, numeroPosti){
+        this._id = identificativo;
+        this._posti = numeroPosti;
+        this._occupati = getPrenotazioniFake(identificativo)
+    }
+    //si occupa di fornire i posti di una sola prenotazione
+    getOccupatiById(n){
+        let ris = [];
+        for (let i of this._occupati){
+            if(i[1] == n) ris.push(i[0]);
+        }
+        return ris;
+    }
+}
+
+var current;                            //utilizzo per il film
 
 var films = [
     {id: 1, nome: "Non aprite quella porta", descrizione: "...che è dell'ufficio di Antoniotti", sala: "Sala 1", orario:"10:30", posti: 250},
@@ -29,30 +46,35 @@ var prenotazioniFake = [
     [7, 4],
     [24, 10]
 ]
+
 //Chiamate GET
-async function getProiezioni(){                                 
+async function getProiezioni(){                                 //usata nella init e nell'aggiornamento
     let response = await fetch(`${API_URI}/proiezioni`);          
     if(!response.ok){                                             
         throw new Error (`${response.status} ${response.statusText}`)
     }
     return await response.json();                                 
 }
-async function getPrenotazioni(id){
+async function getPrenotazioni(id){                             //usata nella classe film
     let response = await fetch(`${API_URI}/proiezioni/${id}`);
     if(!response.ok){
         throw new Error (`${response.status} ${response.statusText}`)
     }
-    return await response.json();
+    let a = await response.json();
+    return a.sort(function(a, b){
+        return a[0] - b[0];
+    })
 }
-async function getPrenotazione(idProiezione, idPrenotazione){                                 
+async function getPrenotazione(idProiezione, idPrenotazione){          //???                       
     let response = await fetch(`${API_URI}/proiezioni/${idProiezione}/${idPrenotazione}`);          
     if(!response.ok){                                             
         throw new Error (`${response.status} ${response.statusText}`)
     }
     return await response.json();                                 
 }
+
 //invio i posti che vorrei prenotare al server, chiamata POST
-/*async function inviaPrenotazione(idProiezione){
+async function inviaPrenotazione(idProiezione){
     const endpoint = `${API_URI}/films/${idProiezione}`
     const response = await fetch(endpoint, {
         method: "POST",
@@ -61,9 +83,12 @@ async function getPrenotazione(idProiezione, idPrenotazione){
         },
         body: JSON.stringify(postiScelti)
     });
-    if(!response.ok)
-        throw new Error(`${response.status} ${response.statusText}`);
-        return;
+    if(!response.ok){
+        if(response.status == 408){
+            throw new Error("Prenotazione fallita: uno o più posti selezionati sono già occupati");
+        }
+        else throw new Error(`${response.status} ${response.statusText}`);
+    }
     const location = response.headers.get("Location");
     postiScelti = [];
     return location.split("/").pop();
@@ -95,9 +120,26 @@ async function eliminaPrenotazione(idProiezione, idPrenotazione){
         throw new Error(`${response.status} ${response.statusText}`);
         return;
     }
-}*/
+}
 
-function createCard(film){                                  //Gestione creazione locandine
+//chiamate finte
+function getProiezioniFake(){
+    return films;
+}
+function getPrenotazioniFake(a){
+    return prenotazioniFake;
+}
+function inviaPrenotazioneFake(a){
+    return 15;
+}
+function modificaPrenotazioneFake(a, b){
+    return;
+}
+function eliminaPrenotazioneFake(a, b){
+    return;
+}
+
+function createCard(film){                                  //Gestione creazione locandine, in Proiezioni
     let elem = document.createElement("div");
     elem.className="card";
     let head = document.createElement("div");
@@ -125,19 +167,20 @@ function createCard(film){                                  //Gestione creazione
     return elem;
 }
 
-function addFilm(film){                                     //Aggiunta di film
+//Aggiunta di film, in Proiezioni
+function addFilm(film){
     let presentazione = document.createElement("div");
     presentazione.className="item";
     presentazione.appendChild(createCard(film));
     zonaFilm.appendChild(presentazione);
 }
 
-function createSomeImages(){                                //Aggiunta icone spettatore
-    let cells = document.querySelectorAll(".seat");
+//Aggiunta icone spettatore, indipendentemente dal film corrente
+function createSomeImages(){
+    let cells = document.querySelectorAll("td");
     cells.forEach(addImage);
 }
-
-function addImage(e){                                       //Aggiunta icone spettatore
+function addImage(e){
     let x = document.createElementNS("http://www.w3.org/2000/svg","svg");
     x.setAttribute("width", 40);
     x.setAttribute("height", 40);
@@ -152,6 +195,80 @@ function addImage(e){                                       //Aggiunta icone spe
     e.appendChild(x);
 }
 
+//compito: mostrare le prenotazioni correnti e settare il film corrente
+function mostraPrenotazioni(posti, id){
+    document.getElementById("proiezioni").hidden = true;            //nasconde le proiezioni
+    document.getElementById("prenotazioni").hidden = false;         //Mostra i posti, da disegnare
+    current = new film(id, posti);                                  //chiamata implicita al server, vedasi la dichiarazione della classe
+    makeTable();
+    createSomeImages();
+    document.getElementById("invio").appendChild(document.createTextNode("Invia Prenotazione"));
+    document.getElementById("cerca-prenotazione").addEventListener("submit",trovaPrenotazione)
+    document.getElementById("invio").addEventListener("click", function(){
+        /*try{
+            let a = inviaPrenotazione(id);
+            alert(a);
+            mostraProiezioni();
+        } catch(error) {
+            alert("Errore all'invio nella prenotazione");
+        }*/
+        if(postiScelti.length == 0){
+            alert("Nessuna prenotazione inviata");
+        }
+        else{
+            let a = inviaPrenotazioneFake(id);
+            alert("Il numero di prenotazione è: " + a);
+        }
+        //sostituisco il bottone con un suo clone per eliminare i gestori di eventi
+        eliminaHandlers()
+        mostraProiezioni();
+    })
+}
+
+//Creazione posti sala, dipendente dal film corrente
+function makeTable(){
+    let nPosti = current._posti;
+    let o = current._occupati.toSorted(function(a, b){
+        return a[0] - b[0];
+    });
+    if(o.length == 0) o.push([-2, -2]);         //valori impossibili da ottenere
+    let nFile = Math.floor(nPosti / 20);
+    let PostiRestanti = nPosti - nFile * 20;
+    for(let i = 0; i<nFile; i++){
+        let row = document.createElement("tr");
+        for(let j = 0; j < 20; j++){
+            let cell = document.createElement("td");
+            if(i*20+j == o[0][0]){
+                cell.className = "booked";
+                o.shift();
+                if(o.length == 0) o.push([-2, -2]);
+            }
+            else cell.className = "seat";
+            cell.addEventListener("click", function(){
+                modificaPosto(cell, i*20+j);
+            });
+            row.appendChild(cell);
+        }
+        zonaPrenotazioni.appendChild(row);
+    }
+    let last = document.createElement("tr");
+    for(let j = 0; j < PostiRestanti; j++){
+        let cell = document.createElement("td");
+        if(nFile*20+j == o[0][0]){
+            cell.className = "booked";
+            o.shift();
+            if(o.length == 0) o.push([-2, -2]);
+        }
+        else cell.className = "seat";
+        cell.addEventListener("click", function(){
+            modificaPosto(cell, nFile*20+j);
+        });
+        last.appendChild(cell);
+    }
+    zonaPrenotazioni.appendChild(last);
+}
+
+//Cambia la classe di un posto. Indipendente dal film corrente
 function modificaPosto(posto, numero){
     if(posto.className == "selected"){
         posto.className = "seat";
@@ -183,112 +300,67 @@ function modificaPosto(posto, numero){
     }
 }
 
-function makeTable(nPosti){                                 //Creazione posti sala
-    let nFile = Math.floor(nPosti / 20);
-    let PostiRestanti = nPosti - nFile * 20;
-    for(let i = 0; i<nFile; i++){
-        let row = document.createElement("tr");
-        for(let j = 0; j < 20; j++){
-            let cell = document.createElement("td");
-            cell.className = "seat";
-            cell.addEventListener("click", function(){
-                modificaPosto(cell, i*20+j);
-            })
-            row.appendChild(cell);
-        }
-        zonaPrenotazioni.appendChild(row);
-    }
-    let last = document.createElement("tr");
-    for(let j = 0; j < PostiRestanti; j++){
-        let cell = document.createElement("td");
-        cell.className = "seat";
-        cell.addEventListener("click", function(){
-            modificaPosto(cell, nFile*20+j);
-        })
-        last.appendChild(cell);
-    }
-    zonaPrenotazioni.appendChild(last);
-}
-
-function mostraPrenotazioni(posti, id){  //mostra prenotazioni
-    document.getElementById("proiezioni").hidden = true;
-    document.getElementById("prenotazioni").hidden = false;
-    makeTable(posti);
-    createSomeImages();
-    document.getElementById("invio").addEventListener("click", function(){
-        /*try{
-            let a = inviaPrenotazione(id);
-            alert(a);
-            mostraProiezioni();
-        } catch(error) {
-            alert("Errore all'invio nella prenotazione");
-        }*/
-        if(postiScelti.length == 0){
-            alert("Nessuna prenotazione inviata");
-        }
-        else{
-            let a = inviaPrenotazione(id);
-            alert(a);
-        }
-        //sostituisco il bottone con un suo clone per eliminare i gestori di eventi
-        let old = document.getElementById("invio");
-        let newNode = old.cloneNode();
-        old.parentNode.replaceChild(newNode, old);
-        document.getElementById("invio").appendChild(document.createTextNode("Invia Prenotazione"));
-        mostraProiezioni();
-    })
-}
-
+//ritorno alle proiezioni e cancello tutto ciò che riguarda le prenotazioni
 function mostraProiezioni(){
     document.getElementById("proiezioni").hidden = false;
     document.getElementById("prenotazioni").hidden = true;
     zonaPrenotazioni.innerHTML="";
 }
 
+//fetching dei film
 /*async*/function aggiornaFilm(){
     /*getProiezioni().then((films) => films.forEach(addFilm), (error) => alert("Caricamento film non riuscito"));*/
-    films.forEach(addFilm);
+    getProiezioniFake().forEach(addFilm);
 }
 
+//inizializzazione pagina
 /*async*/function init(){
-    document.getElementById("cerca-prenotazione").addEventListener("submit",trovaPrenotazione)
     aggiornaFilm();
     mostraProiezioni();
 }
 
-function inviaPrenotazione(idProiezione){
+//azioni per l'invio della prenotazione
+function mandaPrenotazione(){
     console.log("Invio in corso");
+    let ris = inviaPrenotazioneFake();
     postiScelti=[];
-    return 10;
+    return ris;
 }
 
+//Seleziono i posti relativi ad una sola prenotazione
 function trovaPrenotazione(){
     event.preventDefault();
     let iden = document.getElementById("input-id")
     let idPren = iden.value;
     iden.value = "";
-    mostraPrenotazione(prenotazioniFake, idPren);
+    let a = current.getOccupatiById(idPren);
+    if(a.length == 0){
+        alert("Nessuna prenotazione trovata per questa proiezione")
+    }
+    else{//<----------------------------------
+        mostraPrenotazione(a);
+        eliminaHandlers();
+        let e = document.getElementById("invio");
+        e.appendChild(document.createTextNode("Modifica Prenotazione"));
+        e.addEventListener("click", function(){
+            modifica(idPren);
+        });
+    }
 }
 
-function mostraPrenotazione(postiPrenotati, prenotazione){
+function mostraPrenotazione(postiPrenotati){
     postiPrenotati.sort(function(a, b){
-        return a[0] - b[0];
+        return a - b;
     });
-    postiScelti = [];
+    postiScelti = postiPrenotati.map(x => x);
     let righe = zonaPrenotazioni.childNodes;
     let n = 0;
     for(let i of righe){
         let celle = i.childNodes;
         for(let j of celle){
-            if(n == postiPrenotati[0][0]){
-                if(prenotazione == postiPrenotati[0][1]){
-                    j.className = "autobook";
-                    postiScelti.push(postiPrenotati[0][0]);
-                }
-                else{
-                    j.className = "booked";
-                }
-                postiPrenotati.shift();
+            if(n == postiPrenotati[0]){
+                j.className = "autobook";
+                postiPrenotati.shift(); 
                 if(postiPrenotati.length == 0){
                     document.querySelectorAll(".seat").forEach(block);
                     return;
@@ -302,4 +374,24 @@ function mostraPrenotazione(postiPrenotati, prenotazione){
 
 function block(cella){
     cella.className = "booked";
+}
+
+function modifica(idPrenotazione){
+    if(postiScelti.length == 0){
+        eliminaPrenotazioneFake(current._id, idPrenotazione);
+        alert("Prenotazione eliminata con successo");
+    }
+    else{
+        modificaPrenotazioneFake(current._id, idPrenotazione);
+        postiScelti = [];
+        alert("Prenotazione modificata con successo");
+    }
+    eliminaHandlers();
+    mostraProiezioni();
+}
+
+function eliminaHandlers(){                         //relativo solo al pulsante di invio
+    let old = document.getElementById("invio");
+    let newNode = old.cloneNode();
+    old.parentNode.replaceChild(newNode, old);
 }
