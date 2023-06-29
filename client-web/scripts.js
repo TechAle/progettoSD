@@ -1,7 +1,12 @@
-var API_URI = "http://localhost:8080";
-var zonaFilm= document.querySelector("#locandina");
-var zonaPrenotazioni = document.querySelector("#sala table");
-var postiScelti = [];
+/*********************************************************/
+/* DA FARE: sistemare le chiamate alle chiamate AJAX     */
+/*********************************************************/
+
+const API_URI = "http://localhost:8080";
+const zonaFilm= document.querySelector("#locandina");
+const zonaPrenotazioni = document.querySelector("#sala table");
+let postiScelti = [];
+let postiRimossi = [];
 
 class film {
     constructor(identificativo, numeroPosti){
@@ -19,22 +24,22 @@ class film {
     }
 }
 
-var current;                            //utilizzo per il film
+let current;                            //utilizzo per il film
 
 //variabili di prova
-var films = [
-    {id: 1, nome: "Non aprite quella porta", descrizione: "...che è dell'ufficio di Antoniotti", sala: "Sala 1", orario:"10:30", posti: 250},
-    {id: 2, nome: "Mine", descrizione: "Il protagonista dovrà affrontare diverse insidie.. per creare il proprio progetto di SD", sala: "Sala 2", orario:"9:45", posti: 220},
-    {id: 3, nome: "Wild University", descrizione: "Documentario sulla routine quotidiana degli studenti di Informatica dell'UniMiB", sala: "a", orario:"a", posti: 125},
-    {id: 4, nome: "300", descrizione: "Storia di valorosi eroi che sono siusciti a resistere al progetto di LP", sala: "a", orario:"a", posti: 300},
-    {id: 5, nome: "Terminator", descrizione: "Sorrenti è venuto dal futuro e minaccia l'esistenza dell'Università! Riuscirà il Sig. Ferretti a salvarla?", sala: "a", orario:"a", posti: 160},
-    {id: 6, nome: "Fuga da RSAD", descrizione:"a", sala: "a", orario:"a", posti: 280},
-    {id: 7, nome: "Apocalypto", descrizione: "Una matricola lotta per la propria vita contro un gruppo di docenti di GAL. Poi arrivano i maranza...", sala: "a", orario:"a", posti: 140},
-    {id: 8, nome: "The Hunger Games", descrizione: "24 pendolari universitari, di 12 facoltà diverse, rimangono intrappolati in un treno fermo sui binari, mentre si recano alla loro università preferita. Osservati dai dipendenti di Trenord, inizieranno una dura lotta per la sopravvivenza. Solo uno rimarrà vivo... forse", sala: "a", orario:"a", posti: 300},
-    {id: 9, nome: "Mission Impossible - Protocollo fantasma", descrizione: "Riuscirà il nostro eroe ad uscire dalla lezione dell'Avitabile senza essere visto?", sala: "a", orario:"a", posti: 320},
-    {id: 10, nome: "Un film da non vedere", descrizione: "Sperando di non sembrare troppo cattivo: invece di pensare a delle descrizioni per questo film, non sarebbe stato meglio utilizzare quel poco tempo per approfondire come si implementa in CMOS una porta And a 6 ingressi oppure quanta approssimazione c'è tra un numero in virgola mobile ed il successivo quando stiamo rappresentando valori attorno a 2425.32?", sala: "a", orario:"a", posti: 0}
+const films = [
+    {id: 1, nome: "Non aprite quella porta", descrizione: "...che è dell'ufficio di Antoniotti", sala: "Sala 1", orario:"10:30", data:"a", posti: 250},
+    {id: 2, nome: "Mine", descrizione: "Il protagonista dovrà affrontare diverse insidie.. per creare il proprio progetto di SD", sala: "Sala 2", orario:"9:45", data:"a", posti: 220},
+    {id: 3, nome: "Wild University", descrizione: "Documentario sulla routine quotidiana degli studenti di Informatica dell'UniMiB", sala: "a", orario:"a", data:"a", posti: 125},
+    {id: 4, nome: "300", descrizione: "Storia di valorosi eroi che sono siusciti a resistere al progetto di LP", sala:"a", orario:"a", posti: 300},
+    {id: 5, nome: "Terminator", descrizione: "Sorrenti è venuto dal futuro e minaccia l'esistenza dell'Università! Riuscirà il Sig. Ferretti a salvarla?", sala:"a", orario:"a", data:"a", posti: 160},
+    {id: 6, nome: "Fuga da RSAD", descrizione:"a", sala: "a", orario:"a", data:"a", posti: 280},
+    {id: 7, nome: "Apocalypto", descrizione: "Una matricola lotta per la propria vita contro un gruppo di docenti di GAL. Poi arrivano i maranza...", sala: "a", orario:"a", data:"a", posti: 140},
+    {id: 8, nome: "The Hunger Games", descrizione: "24 pendolari universitari, di 12 facoltà diverse, rimangono intrappolati in un treno fermo sui binari, mentre si recano alla loro università preferita. Osservati dai dipendenti di Trenord, inizieranno una dura lotta per la sopravvivenza. Solo uno rimarrà vivo... forse", sala: "a", orario:"a", data:"a", posti: 300},
+    {id: 9, nome: "Mission Impossible - Protocollo fantasma", descrizione: "Riuscirà il nostro eroe ad uscire dalla lezione dell'Avitabile senza essere visto?", sala: "a", orario:"a", data:"a", posti: 320},
+    {id: 10, nome: "Un film da non vedere", descrizione: "Sperando di non sembrare troppo cattivo: invece di pensare a delle descrizioni per questo film, non sarebbe stato meglio utilizzare quel poco tempo per approfondire come si implementa in CMOS una porta And a 6 ingressi oppure quanta approssimazione c'è tra un numero in virgola mobile ed il successivo quando stiamo rappresentando valori attorno a 2425.32?", sala: "a", orario:"a", data:"a", posti: 0}
   ];
-var prenotazioniFake = [
+const prenotazioniFake = [
     [2, 10],
     [4, 10],
     [1, 3],
@@ -44,81 +49,101 @@ var prenotazioniFake = [
     [23, 10],
     [40, 1],
     [7, 4],
-    [24, 10]
+    [24, 10],
+    [32, 16],
+    [26, 2],
+    [41, 1],
+    [42, 1]
 ] //coppie <posto, prenotazione>
 
-//Chiamate GET
-async function getProiezioni(){                                 //usata nella init e nell'aggiornamento
+//prende una lista di proiezioni, metodo GET
+async function getProiezioni(){
     let response = await fetch(`${API_URI}/proiezioni`);          
     if(!response.ok){                                             
         throw new Error (`${response.status} ${response.statusText}`)
     }
     return await response.json();                                 
 }
-async function getPrenotazioni(id){                             //usata nella classe film
-    let response = await fetch(`${API_URI}/proiezioni/${id}`);
+//prende una lista di prenotazioni per un film, metodo GET
+async function getPrenotazioni(){
+    let response = await fetch(`${API_URI}/proiezioni/${current._id}`);
     if(!response.ok){
+        if(response.status === 404){
+            throw new Error("Errore: film inesistente");
+        }
         throw new Error (`${response.status} ${response.statusText}`)
     }
     let a = await response.json();
-    return a.sort(function(a, b){
+    return a["postiPrenotati"].sort(function(a, b){
         return a[0] - b[0];
     })
 }
-async function getPrenotazione(idProiezione, idPrenotazione){          //???                       
-    let response = await fetch(`${API_URI}/proiezioni/${idProiezione}/${idPrenotazione}`);          
-    if(!response.ok){                                             
-        throw new Error (`${response.status} ${response.statusText}`)
-    }
-    return await response.json();                                 
-}
 
-//invio i posti che vorrei prenotare al server, chiamata POST
-async function inviaPrenotazione(idProiezione){
-    const endpoint = `${API_URI}/films/${idProiezione}`
+//invio i posti che vorrei prenotare al server (array di numeri), chiamata POST
+async function inviaPrenotazione(){
+    const endpoint = `${API_URI}/aggiungiPosto`
     const response = await fetch(endpoint, {
         method: "POST",
         headers: {
             "Content-type": "application/json"
         },
-        body: JSON.stringify(postiScelti)
+        body: JSON.stringify({
+            idProiezione: current._id,
+            nuoviPosti: postiScelti
+        })
     });
     if(!response.ok){
-        if(response.status == 408){
+        if(response.status === 408){                     //gestione errore 408 - Conflict
             throw new Error("Prenotazione fallita: uno o più posti selezionati sono già occupati");
         }
-        else throw new Error(`${response.status} ${response.statusText}`);
+        else throw new Error(`${response.status} ${response.statusText}`); //errore generico
     }
     const location = response.headers.get("Location");
     postiScelti = [];
     return location.split("/").pop();
 }
 
-//chiamata PUT
-async function modificaPrenotazione(idProiezione, idPrenotazione){
-    const endpoint = `${API_URI}/films/${idProiezione}/${idPrenotazione}`
+//invio i posti da mantenere al server (array di numeri), chiamata PUT
+async function aggiungiPosti(idPrn){
+    const endpoint = `${API_URI}/aggiungiPosto`;
     const response = await fetch(endpoint, {
         method: "PUT",
         headers: {
             "Content-type": "application/json"
         },
-        body: JSON.stringify(postiScelti)
+        body: JSON.stringify({
+            idPrenotazione: idPrn,
+            idProiezione: current._id,
+            nuoviPosti: postiScelti
+        })
     });
     if(!response.ok){
+        if(response.status === 404){
+            throw new Error("Errore in aggiornamento: prenotazione non trovata")
+        }
         throw new Error(`${response.status} ${response.statusText}`);
-        return;
     }
 }
 
 //chiamata DELETE
-async function eliminaPrenotazione(idProiezione, idPrenotazione){
-    const endpoint = `${API_URI}/films/${idProiezione}/${idPrenotazione}`
+async function rimuoviPosti(idPrn){
+    const endpoint = `${API_URI}/eliminaPosto`
     const response = await fetch(endpoint, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify({
+            idPrenotazione: idPrn,
+            idProiezione: current._id,
+            nuoviPosti: postiScelti
+        })
     });
     if(!response.ok){
+        if(response.status == 404){
+            throw new Error("Errore: prenotazione inesistente")
+        }
         throw new Error(`${response.status} ${response.statusText}`);
-        return;
     }
 }
 
@@ -132,10 +157,10 @@ function getPrenotazioniFake(a){
 function inviaPrenotazioneFake(a){
     return 15;
 }
-function modificaPrenotazioneFake(a, b){
+function aggiungiPostiFake(b){
     return;
 }
-function eliminaPrenotazioneFake(a, b){
+function rimuoviPostiFake(b){
     return;
 }
 
@@ -155,7 +180,7 @@ function createCard(film){                                  //Gestione creazione
     a.appendChild(document.createTextNode(film["sala"]));
     body.appendChild(a);
     a = document.createElement("p");
-    a.appendChild(document.createTextNode(film["orario"]));
+    a.appendChild(document.createTextNode(film["data"] + " " + film["orario"]));
     body.appendChild(a);
     a = document.createElement("button");
     a.appendChild(document.createTextNode("Prenota Visione"));
@@ -177,8 +202,7 @@ function addFilm(film){
 
 //Aggiunta icone spettatore, indipendentemente dal film corrente
 function createSomeImages(){
-    let cells = document.querySelectorAll("td");
-    cells.forEach(addImage);
+    document.querySelectorAll("td").forEach(addImage);
 }
 function addImage(e){
     let x = document.createElementNS("http://www.w3.org/2000/svg","svg");
@@ -210,7 +234,7 @@ function mostraPrenotazioni(posti, id){
         }
         else{
             /*try{*/
-            let a = inviaPrenotazioneFake(id);
+            let a = mandaPrenotazione();
             alert("Il numero di prenotazione è: " + a);
             mostraProiezioni();
             /*} catch(error) {
@@ -226,14 +250,14 @@ function makeTable(){
     let o = current._occupati.toSorted(function(a, b){
         return a[0] - b[0];
     });
-    if(o.length == 0) o.push([-2, -2]);         //valori impossibili da ottenere
+    if(o.length === 0) o.push([-2, -2]);         //valori impossibili da ottenere
     let nFile = Math.floor(nPosti / 20);
     let PostiRestanti = nPosti - nFile * 20;
     for(let i = 0; i<nFile; i++){
         let row = document.createElement("tr");
         for(let j = 0; j < 20; j++){
             let cell = document.createElement("td");
-            if(i*20+j == o[0][0]){
+            if(i*20+j === o[0][0]){
                 cell.className = "booked";
                 o.shift();
                 if(o.length == 0) o.push([-2, -2]);
@@ -249,10 +273,10 @@ function makeTable(){
     let last = document.createElement("tr");
     for(let j = 0; j < PostiRestanti; j++){
         let cell = document.createElement("td");
-        if(nFile*20+j == o[0][0]){
+        if(nFile*20+j === o[0][0]){
             cell.className = "booked";
             o.shift();
-            if(o.length == 0) o.push([-2, -2]);
+            if(o.length === 0) o.push([-2, -2]);
         }
         else cell.className = "seat";
         cell.addEventListener("click", function(){
@@ -265,33 +289,33 @@ function makeTable(){
 
 //Cambia la classe di un posto. Indipendente dal film corrente
 function modificaPosto(posto, numero){
-    if(posto.className == "selected"){
+    if(posto.className === "selected"){
         posto.className = "seat";
         let i = postiScelti.indexOf(numero);
-        if(i == -1){
+        if(i === -1){
             console.log("errore");
             return;
         }
         postiScelti[i] = postiScelti[postiScelti.length - 1];
         postiScelti.pop();
     }
-    else if(posto.className == "seat"){
+    else if(posto.className === "seat"){
         posto.className = "selected";
         postiScelti.push(numero);
     }
-    else if(posto.className == "autobook"){
+    else if(posto.className === "autobook"){
         posto.className = "leave";
-        let i = postiScelti.indexOf(numero);
-        if(i == -1){
+        postiRimossi.push(numero);
+    }
+    else if(posto.className === "leave"){
+        posto.className = "autobook";
+        let i = postiRimossi.indexOf(numero);
+        if(i === -1){
             console.log("errore");
             return;
         }
-        postiScelti[i] = postiScelti[postiScelti.length - 1];
-        postiScelti.pop();
-    }
-    else if(posto.className == "leave"){
-        posto.className = "autobook";
-        postiScelti.push(numero);
+        postiRimossi[i] = postiRimossi[postiSRimossi.length - 1];
+        postiRimossi.pop();
     }
 }
 
@@ -300,6 +324,8 @@ function mostraProiezioni(){
     document.getElementById("proiezioni").hidden = false;
     document.getElementById("prenotazioni").hidden = true;
     zonaPrenotazioni.innerHTML="";
+    postiRimossi = [];
+    postiScelti = [];
     eliminaHandlers();
 }
 
@@ -315,7 +341,7 @@ function mostraProiezioni(){
     mostraProiezioni();
 }
 
-//azioni per l'invio della prenotazione
+//azioni per l'invio della prenotazione sul film corrente
 function mandaPrenotazione(){
     console.log("Invio in corso");
     let ris = inviaPrenotazioneFake();
@@ -334,7 +360,6 @@ function trovaPrenotazione(){
         alert("Nessuna prenotazione trovata per questa proiezione")
     }
     else{
-        document.querySelectorAll("td").forEach(block);
         mostraPrenotazione(a);
         eliminaHandlers();
         let e = document.getElementById("invio");
@@ -349,16 +374,15 @@ function mostraPrenotazione(postiPrenotati){
     postiPrenotati.sort(function(a, b){
         return a - b;
     });
-    postiScelti = postiPrenotati.map(x => x);
     let righe = zonaPrenotazioni.childNodes;
     let n = 0;
     for(let i of righe){
         let celle = i.childNodes;
         for(let j of celle){
-            if(n == postiPrenotati[0]){
+            if(n === postiPrenotati[0]){
                 j.className = "autobook";
                 postiPrenotati.shift(); 
-                if(postiPrenotati.length == 0){
+                if(postiPrenotati.length === 0){
                     return;
                 }
             }
@@ -372,15 +396,15 @@ function block(cella){
 }
 
 function modifica(idPrenotazione){
-    if(postiScelti.length == 0){
-        eliminaPrenotazioneFake(current._id, idPrenotazione);
-        alert("Prenotazione eliminata con successo");
+    if(postiScelti.length != 0){
+        aggiungiPostiFake(idPrenotazione);
     }
-    else{
-        modificaPrenotazioneFake(current._id, idPrenotazione);
-        postiScelti = [];
-        alert("Prenotazione modificata con successo");
+    if(postiRimossi.length != 0){
+        rimuoviPostiFake(idPrenotazione);
     }
+    alert("Prenotazione modificata con successo");
+    postiScelti = [];
+    postiRimossi = [];
     mostraProiezioni();
 }
 
