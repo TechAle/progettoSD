@@ -44,18 +44,23 @@ var prenotazioniFake = [
     [23, 10],
     [40, 1],
     [7, 4],
-    [24, 10]
+    [24, 10],
+    [32, 16],
+    [26, 2],
+    [41, 1],
+    [42, 1]
 ] //coppie <posto, prenotazione>
 
-//Chiamate GET
-async function getProiezioni(){                                 //usata nella init e nell'aggiornamento
+//prende una lista di proiezioni
+async function getProiezioni(){
     let response = await fetch(`${API_URI}/proiezioni`);          
     if(!response.ok){                                             
         throw new Error (`${response.status} ${response.statusText}`)
     }
     return await response.json();                                 
 }
-async function getPrenotazioni(id){                             //usata nella classe film
+//prende una lista di prenotazioni per un film
+async function getPrenotazioni(id){
     let response = await fetch(`${API_URI}/proiezioni/${id}`);
     if(!response.ok){
         throw new Error (`${response.status} ${response.statusText}`)
@@ -65,15 +70,8 @@ async function getPrenotazioni(id){                             //usata nella cl
         return a[0] - b[0];
     })
 }
-async function getPrenotazione(idProiezione, idPrenotazione){          //???                       
-    let response = await fetch(`${API_URI}/proiezioni/${idProiezione}/${idPrenotazione}`);          
-    if(!response.ok){                                             
-        throw new Error (`${response.status} ${response.statusText}`)
-    }
-    return await response.json();                                 
-}
 
-//invio i posti che vorrei prenotare al server, chiamata POST
+//invio i posti che vorrei prenotare al server (array di numeri), chiamata POST
 async function inviaPrenotazione(idProiezione){
     const endpoint = `${API_URI}/films/${idProiezione}`
     const response = await fetch(endpoint, {
@@ -84,17 +82,17 @@ async function inviaPrenotazione(idProiezione){
         body: JSON.stringify(postiScelti)
     });
     if(!response.ok){
-        if(response.status == 408){
+        if(response.status == 408){                     //gestione errore 408 - Conflict
             throw new Error("Prenotazione fallita: uno o più posti selezionati sono già occupati");
         }
-        else throw new Error(`${response.status} ${response.statusText}`);
+        else throw new Error(`${response.status} ${response.statusText}`); //errore generico
     }
     const location = response.headers.get("Location");
     postiScelti = [];
     return location.split("/").pop();
 }
 
-//chiamata PUT
+//invio i posti da mantenere al server (array di numeri), chiamata PUT
 async function modificaPrenotazione(idProiezione, idPrenotazione){
     const endpoint = `${API_URI}/films/${idProiezione}/${idPrenotazione}`
     const response = await fetch(endpoint, {
@@ -102,11 +100,10 @@ async function modificaPrenotazione(idProiezione, idPrenotazione){
         headers: {
             "Content-type": "application/json"
         },
-        body: JSON.stringify(postiScelti)
+        body: JSON.stringify(postiScelti)               //invio i posti da mantenere
     });
     if(!response.ok){
         throw new Error(`${response.status} ${response.statusText}`);
-        return;
     }
 }
 
@@ -118,7 +115,6 @@ async function eliminaPrenotazione(idProiezione, idPrenotazione){
     });
     if(!response.ok){
         throw new Error(`${response.status} ${response.statusText}`);
-        return;
     }
 }
 
