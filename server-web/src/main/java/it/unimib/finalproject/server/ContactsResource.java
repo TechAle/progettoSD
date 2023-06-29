@@ -24,6 +24,7 @@ public class ContactsResource {
     public Response getContacts() {
         // Si apre una socket verso il database, si ottengono i dati e si
         // costruisce la risposta.
+        return Response.ok().build();
     }
 
     /**
@@ -73,9 +74,6 @@ public class ContactsResource {
         // Si apre una socket verso il database, si ottiene il contatto con
         // l'ID specificato.
 
-        if (contact == null)
-            return Response.status(Response.Status.NOT_FOUND).build();
-
-        return Response.ok(contact).build();
+        return Response.ok().build();
     }
 }

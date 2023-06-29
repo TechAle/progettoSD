@@ -35,8 +35,8 @@ public class parserUtils {
             // Crea la struttura
             bodyRESP body = parserBody(operation, indexIniziale, operation.length(), null);
             // Vari errori
-            if (body == null) return new commandRESP("-$Errore nella sintassi");
-            else if (body.error)
+            if (body == null && !operation.equals("VIEW")) return new commandRESP("-$Errore nella sintassi");
+            else if (body != null && body.error)
                 return new commandRESP("-$" + body.getError());
             // Inizializzo l'output finale
             commandRESP output = new commandRESP(operation.substring(0, indexIniziale));

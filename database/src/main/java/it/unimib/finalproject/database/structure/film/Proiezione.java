@@ -111,7 +111,6 @@ public class Proiezione {
         return "+$Posti rimossi con successo";
     }
 
-    // TODO aggiungere data
     @Override
     public String toString() {
         StringBuilder postiOccupatiSTR = new StringBuilder();
