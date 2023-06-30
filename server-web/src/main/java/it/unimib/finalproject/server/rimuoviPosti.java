@@ -30,6 +30,7 @@ public class rimuoviPosti {
         else
             databaseQuery = queryAssembler.generateDelete(idProiezione, idPrenotazione, posti);
 
+        /*
         //  Invio databaseQuery al database tramite socket.
         clientDB dbSocket = new clientDB("127.0.0.1", 3030);
         dbSocket.sendMessage(databaseQuery);
@@ -38,7 +39,12 @@ public class rimuoviPosti {
         String dbResponse = dbSocket.getResponse();
         ArrayList<Object> parsedMsg = msgParser.parse(dbResponse);
 
-        //  Se il database ha restituito un successo, costruiamo l'oggetto da mandare al client.
+         */
+
+        //PROVVISORIA
+        ArrayList<Object> parsedMsg = msgParser.parse("[+]");
+
+        //  Se il database ha restituito un successo, invio messaggio "No Content".
         Object pMsgType = parsedMsg.remove(0);
         if(pMsgType.equals('+'))
             return Response.status(204).build();
