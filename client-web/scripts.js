@@ -1,7 +1,12 @@
+/*********************************************************/
+/* DA FARE: sistemare le chiamate alle chiamate AJAX     */
+/*********************************************************/
+
 var API_URI = "http://localhost:8080";
 var zonaFilm= document.querySelector("#locandina");
 var zonaPrenotazioni = document.querySelector("#sala table");
 var postiScelti = [];
+var postiRimossi = [];
 
 class film {
     constructor(identificativo, numeroPosti){
@@ -44,20 +49,28 @@ var prenotazioniFake = [
     [23, 10],
     [40, 1],
     [7, 4],
-    [24, 10]
+    [24, 10],
+    [32, 16],
+    [26, 2],
+    [41, 1],
+    [42, 1]
 ] //coppie <posto, prenotazione>
 
-//Chiamate GET
-async function getProiezioni(){                                 //usata nella init e nell'aggiornamento
+//prende una lista di proiezioni, metodo GET
+async function getProiezioni(){
     let response = await fetch(`${API_URI}/proiezioni`);          
     if(!response.ok){                                             
         throw new Error (`${response.status} ${response.statusText}`)
     }
     return await response.json();                                 
 }
-async function getPrenotazioni(id){                             //usata nella classe film
-    let response = await fetch(`${API_URI}/proiezioni/${id}`);
+//prende una lista di prenotazioni per un film, metodo GET
+async function getPrenotazioni(){
+    let response = await fetch(`${API_URI}/proiezioni/${current._id}`);
     if(!response.ok){
+        if(response.status == 404){
+            throw new Error("Errore: film inesistente");
+        }
         throw new Error (`${response.status} ${response.statusText}`)
     }
     let a = await response.json();
@@ -65,60 +78,72 @@ async function getPrenotazioni(id){                             //usata nella cl
         return a[0] - b[0];
     })
 }
-async function getPrenotazione(idProiezione, idPrenotazione){          //???                       
-    let response = await fetch(`${API_URI}/proiezioni/${idProiezione}/${idPrenotazione}`);          
-    if(!response.ok){                                             
-        throw new Error (`${response.status} ${response.statusText}`)
-    }
-    return await response.json();                                 
-}
 
-//invio i posti che vorrei prenotare al server, chiamata POST
-async function inviaPrenotazione(idProiezione){
-    const endpoint = `${API_URI}/films/${idProiezione}`
+//invio i posti che vorrei prenotare al server (array di numeri), chiamata POST
+async function inviaPrenotazione(){
+    const endpoint = `${API_URI}/aggiungiPosto`
     const response = await fetch(endpoint, {
         method: "POST",
         headers: {
             "Content-type": "application/json"
         },
-        body: JSON.stringify(postiScelti)
+        body: JSON.stringify({
+            idProiezione: current._id,
+            nuoviPosti: postiScelti
+        })
     });
     if(!response.ok){
-        if(response.status == 408){
+        if(response.status == 408){                     //gestione errore 408 - Conflict
             throw new Error("Prenotazione fallita: uno o più posti selezionati sono già occupati");
         }
-        else throw new Error(`${response.status} ${response.statusText}`);
+        else throw new Error(`${response.status} ${response.statusText}`); //errore generico
     }
     const location = response.headers.get("Location");
     postiScelti = [];
     return location.split("/").pop();
 }
 
-//chiamata PUT
-async function modificaPrenotazione(idProiezione, idPrenotazione){
-    const endpoint = `${API_URI}/films/${idProiezione}/${idPrenotazione}`
+//invio i posti da mantenere al server (array di numeri), chiamata PUT
+async function aggiungiPosti(idPrn){
+    const endpoint = `${API_URI}/aggiungiPosto`;
     const response = await fetch(endpoint, {
         method: "PUT",
         headers: {
             "Content-type": "application/json"
         },
-        body: JSON.stringify(postiScelti)
+        body: JSON.stringify({
+            idPrenotazione: idPrn,
+            idProiezione: current._id,
+            nuoviPosti: postiScelti
+        })
     });
     if(!response.ok){
+        if(response.status == 404){
+            throw new Error("Errore in aggiornamento: prenotazione non trovata")
+        }
         throw new Error(`${response.status} ${response.statusText}`);
-        return;
     }
 }
 
 //chiamata DELETE
-async function eliminaPrenotazione(idProiezione, idPrenotazione){
-    const endpoint = `${API_URI}/films/${idProiezione}/${idPrenotazione}`
+async function rimuoviPosti(idPrn){
+    const endpoint = `${API_URI}/eliminaPosto`
     const response = await fetch(endpoint, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify({
+            idPrenotazione: idPrn,
+            idProiezione: current._id,
+            nuoviPosti: postiScelti
+        })
     });
     if(!response.ok){
+        if(response.status == 404){
+            throw new Error("Errore: prenotazione inesistente")
+        }
         throw new Error(`${response.status} ${response.statusText}`);
-        return;
     }
 }
 
@@ -132,10 +157,10 @@ function getPrenotazioniFake(a){
 function inviaPrenotazioneFake(a){
     return 15;
 }
-function modificaPrenotazioneFake(a, b){
+function aggiungiPostiFake(b){
     return;
 }
-function eliminaPrenotazioneFake(a, b){
+function rimuoviPostiFake(b){
     return;
 }
 
@@ -210,7 +235,7 @@ function mostraPrenotazioni(posti, id){
         }
         else{
             /*try{*/
-            let a = inviaPrenotazioneFake(id);
+            let a = mandaPrenotazione();
             alert("Il numero di prenotazione è: " + a);
             mostraProiezioni();
             /*} catch(error) {
@@ -281,17 +306,17 @@ function modificaPosto(posto, numero){
     }
     else if(posto.className == "autobook"){
         posto.className = "leave";
-        let i = postiScelti.indexOf(numero);
+        postiRimossi.push(numero);
+    }
+    else if(posto.className == "leave"){
+        posto.className = "autobook";
+        let i = postiRimossi.indexOf(numero);
         if(i == -1){
             console.log("errore");
             return;
         }
-        postiScelti[i] = postiScelti[postiScelti.length - 1];
-        postiScelti.pop();
-    }
-    else if(posto.className == "leave"){
-        posto.className = "autobook";
-        postiScelti.push(numero);
+        postiRimossi[i] = postiRimossi[postiSRimossi.length - 1];
+        postiRimossi.pop();
     }
 }
 
@@ -300,6 +325,8 @@ function mostraProiezioni(){
     document.getElementById("proiezioni").hidden = false;
     document.getElementById("prenotazioni").hidden = true;
     zonaPrenotazioni.innerHTML="";
+    postiRimossi = [];
+    postiScelti = [];
     eliminaHandlers();
 }
 
@@ -315,7 +342,7 @@ function mostraProiezioni(){
     mostraProiezioni();
 }
 
-//azioni per l'invio della prenotazione
+//azioni per l'invio della prenotazione sul film corrente
 function mandaPrenotazione(){
     console.log("Invio in corso");
     let ris = inviaPrenotazioneFake();
@@ -334,7 +361,6 @@ function trovaPrenotazione(){
         alert("Nessuna prenotazione trovata per questa proiezione")
     }
     else{
-        document.querySelectorAll("td").forEach(block);
         mostraPrenotazione(a);
         eliminaHandlers();
         let e = document.getElementById("invio");
@@ -349,7 +375,6 @@ function mostraPrenotazione(postiPrenotati){
     postiPrenotati.sort(function(a, b){
         return a - b;
     });
-    postiScelti = postiPrenotati.map(x => x);
     let righe = zonaPrenotazioni.childNodes;
     let n = 0;
     for(let i of righe){
@@ -372,15 +397,15 @@ function block(cella){
 }
 
 function modifica(idPrenotazione){
-    if(postiScelti.length == 0){
-        eliminaPrenotazioneFake(current._id, idPrenotazione);
-        alert("Prenotazione eliminata con successo");
+    if(postiScelti.length != 0){
+        aggiungiPostiFake(idPrenotazione);
     }
-    else{
-        modificaPrenotazioneFake(current._id, idPrenotazione);
-        postiScelti = [];
-        alert("Prenotazione modificata con successo");
+    if(postiRimossi.length != 0){
+        rimuoviPostiFake(idPrenotazione);
     }
+    alert("Prenotazione modificata con successo");
+    postiScelti = [];
+    postiRimossi = [];
     mostraProiezioni();
 }
 

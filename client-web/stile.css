@@ -40,20 +40,8 @@ body{
     font-size: 2.6vh;
 }
 
-#compacter{
-    display: none;
-}
-
 #topnav-space{
     height: 6.2vh;
-}
-
-.miniRect{
-    height: 4px;
-    width: 30px;
-    background-color: blueviolet;
-    display: block;
-    margin: 6px;
 }
 
 #prenotazioni{
@@ -230,12 +218,6 @@ form{
 }
 
 @media screen and (max-width: 550px){
-    #compacter{
-        float: right;
-        display: block;
-        height: 100%;
-        aspect-ratio: 1 / 1;
-    }
     .item{
         flex: 100%;
         max-width: 100%;
