@@ -1,7 +1,3 @@
-/*********************************************************/
-/* DA FARE: sistemare le chiamate alle chiamate AJAX     */
-/*********************************************************/
-
 const API_URI = "http://localhost:8080";
 const zonaFilm= document.querySelector("#locandina");
 const zonaPrenotazioni = document.querySelector("#sala table");
@@ -65,13 +61,8 @@ async function getProiezioni(){
     return await response.json();                                 
 }
 //prende una lista di prenotazioni per un film, metodo GET
-<<<<<<< Updated upstream
-async function getPrenotazioni(id){
-    let response = await fetch(`${API_URI}/proiezioni/${id}`);
-=======
 async function getPrenotazioni(){
     let response = await fetch(`${API_URI}/getFilm/${current._id}`);
->>>>>>> Stashed changes
     if(!response.ok){
         if(response.status === 404){
             throw new Error("Errore: film inesistente");
