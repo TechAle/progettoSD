@@ -1,4 +1,4 @@
-package it.unimib.finalproject.server.structure.client;
+package it.unimib.finalproject.server.utils.socket;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
