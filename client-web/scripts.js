@@ -27,7 +27,7 @@ class film {
 let current;                            //utilizzo per il film
 
 //variabili di prova
-const films = [
+/*const films = [
     {id: 1, nome: "Non aprite quella porta", descrizione: "...che è dell'ufficio di Antoniotti", sala: "Sala 1", orario:"10:30", data:"a", posti: 250},
     {id: 2, nome: "Mine", descrizione: "Il protagonista dovrà affrontare diverse insidie.. per creare il proprio progetto di SD", sala: "Sala 2", orario:"9:45", data:"a", posti: 220},
     {id: 3, nome: "Wild University", descrizione: "Documentario sulla routine quotidiana degli studenti di Informatica dell'UniMiB", sala: "a", orario:"a", data:"a", posti: 125},
@@ -54,19 +54,24 @@ const prenotazioniFake = [
     [26, 2],
     [41, 1],
     [42, 1]
-] //coppie <posto, prenotazione>
+] //coppie <posto, prenotazione>*/
 
 //prende una lista di proiezioni, metodo GET
 async function getProiezioni(){
-    let response = await fetch(`${API_URI}/proiezioni`);          
+    let response = await fetch(`${API_URI}/getFilms`);          
     if(!response.ok){                                             
         throw new Error (`${response.status} ${response.statusText}`)
     }
     return await response.json();                                 
 }
 //prende una lista di prenotazioni per un film, metodo GET
+<<<<<<< Updated upstream
 async function getPrenotazioni(id){
     let response = await fetch(`${API_URI}/proiezioni/${id}`);
+=======
+async function getPrenotazioni(){
+    let response = await fetch(`${API_URI}/getFilm/${current._id}`);
+>>>>>>> Stashed changes
     if(!response.ok){
         if(response.status === 404){
             throw new Error("Errore: film inesistente");
