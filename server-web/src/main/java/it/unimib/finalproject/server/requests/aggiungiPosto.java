@@ -25,7 +25,7 @@ public class aggiungiPosto {
      * Implementazione di POST "/aggiungiPosto/{idProiezione}".
      */
     @Path("/{idProiezione}")
-    @PUT
+    @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response bookSeats(@PathParam("idProiezione") int idProiezione, String posti){
