@@ -1,6 +1,7 @@
 package it.unimib.finalproject.server.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -10,71 +11,72 @@ import java.util.ArrayList;
  */
 public class msgParser {
 
-    /**
-     * Parser per i messaggi di risposta del database.
-     * @param msg stringa contenente un messaggio inviato dal database.
-     * @return un ArrayList di oggetti (stringhe, liste contenenti stringhe e/o altre liste).
-     */
-    public static ArrayList<Object> parser(String msg){
+    public static ArrayList<Object> parse(String query){
 
-        ArrayList<Object> msgElements = new ArrayList<>();
+        ArrayList<Object> queryElements = new ArrayList<>();
         ArrayList<Object> arrayAppoggio = new ArrayList<>();
+        ArrayList<Character> accepted = new ArrayList<>(Arrays.asList(':', '[', ']', '$'));
 
-        char msgType = msg.charAt(0);
-        msgElements.add(msgType);
-        msg = msg.substring(1);
-
+        queryElements.add(query.charAt(1));
+        query = query.substring(2);
+        query = query.substring(0, query.length() - 2);
         int i = 0;
         try {
-            while (i < msg.length()) {
-                Object temp = null;
-                //  Identificatore stringa.
-                if (msg.charAt(i) == '$') {
-                    i++;
-                    StringBuilder sb = new StringBuilder();
-                    while (i < msg.length() && msg.charAt(i) != ':' && msg.charAt(i) != '[' && msg.charAt(i) != ']' && msg.charAt(i) != '$') {
-                        sb.append(msg.charAt(i));
+            while (i < query.length()) {
+                int addValues = -1;
+                switch (query.charAt(i)) {
+                    case '$':
+                        addValues = 0;
+                        break;
+                    case ':':
+                        addValues = 1;
+                        break;
+                    case '[':
+                        arrayAppoggio.add(new ArrayList<>());
+                        if (arrayAppoggio.size() == 1)
+                            queryElements.add(arrayAppoggio.get(0));
+                        else
+                            ((ArrayList<Object>) arrayAppoggio.get(arrayAppoggio.size() - 2)).add(arrayAppoggio.get(arrayAppoggio.size() - 1));
                         i++;
-                    }
-                    temp = sb.toString();
-                }
-                //  Identificatore stringa rappresentante un numero intero.
-                else if (msg.charAt(i) == ':') {
-                    i++;
-                    StringBuilder sb = new StringBuilder();
-                    while (i < msg.length() && msg.charAt(i) != ':' && msg.charAt(i) != '[' && msg.charAt(i) != ']' && msg.charAt(i) != '$') {
-                        sb.append(msg.charAt(i));
+                        continue;
+                    case ']':
+                        arrayAppoggio.remove(arrayAppoggio.size() - 1);
                         i++;
-                    }
-                    temp = Integer.parseInt(sb.toString());
-                }
-                //  Apertura lista.
-                else if (msg.charAt(i) == '[') {
-                    arrayAppoggio.add(new ArrayList<>());
-                    if (arrayAppoggio.size() == 1)
-                        msgElements.add(arrayAppoggio.get(0));
-                    else
-                        ((ArrayList<Object>) arrayAppoggio.get(arrayAppoggio.size() - 2)).add(arrayAppoggio.get(arrayAppoggio.size() - 1));
-                    i++;
-                }
-                //  Chiusura lista.
-                else if (msg.charAt(i) == ']') {
-                    arrayAppoggio.remove(arrayAppoggio.size() - 1);
-                    i++;
+                        continue;
+                    default:
+                        return null;
                 }
 
-                if (temp != null) {
-                    if (arrayAppoggio.isEmpty())
-                        msgElements.add(temp);
+
+                //noinspection ConstantValue
+                if (addValues != -1) {
+                    Object temp;
+                    StringBuilder sb = new StringBuilder();
+                    i++;
+                    while (i < query.length() && !((accepted).contains(query.charAt(i)))) {
+                        sb.append(query.charAt(i));
+                        i++;
+                    }
+                    if (addValues == 1)
+                        temp = Integer.parseInt(sb.toString());
                     else
-                        ((ArrayList<Object>) arrayAppoggio.get(arrayAppoggio.size() - 1)).add(temp);
+                        temp = sb.toString();
+
+                    if (arrayAppoggio.isEmpty())
+                        queryElements.add(temp);
+                    else {
+                        ((ArrayList<Object>) (arrayAppoggio.get(arrayAppoggio.size() - 1))).add(temp);
+                    }
                 }
+
 
             }
-        }catch(StackOverflowError e){
+        }catch (StackOverflowError e) {
             return null;
         }
-        return msgElements;
+        return queryElements;
+
     }
+
 
 }
