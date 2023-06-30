@@ -7,9 +7,11 @@ import java.util.ArrayList;
 public class test {
 
     public static void main(String args[]){
+        /*
         testView();
         testAdd();
         testDelete();
+         */
         testParseQuery();
     }
 
@@ -57,8 +59,8 @@ public class test {
 
 
     static void testParseQuery(){
-        String queryOrdinaria = "-$testo:1[$testo:2[:3]]$testo";
-        ArrayList<Object> output = msgParser.parser(queryOrdinaria);
+        String queryOrdinaria = "[+[[$nomeFilm1$descrizioneFilm1$sala1:100[]$2002-06-01][$nomeFilm2$descrizioneFilm2$sala2:50[:0:1:0:4:1:6]$2003-06-02][$nomeFilm3$descrizioneFilm3$sala3:40[:0:3]$2002-08-05]]]";
+        ArrayList<Object> output = msgParser.parse(queryOrdinaria);
 
         //  Output.
         for(int i = 0; i < output.size(); i++) {

@@ -16,7 +16,7 @@ public class getFilm {
     @Path("/{idProiezione}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getInfo(@PathParam("idProiezione") int idProiezione){
+    public Response viewFilm(@PathParam("idProiezione") int idProiezione){
         //  Ottengo stringa query da inviare al database
         String databaseQuery = queryAssembler.generateView(idProiezione);
 

@@ -12,7 +12,7 @@ class film {
     constructor(identificativo, numeroPosti){
         this._id = identificativo;
         this._posti = numeroPosti;
-        this._occupati = getPrenotazioniFake(identificativo)
+        this._occupati = getPrenotazioni(identificativo)
     }
     //si occupa di fornire i posti di una sola prenotazione
     getOccupatiById(n){
@@ -65,8 +65,8 @@ async function getProiezioni(){
     return await response.json();                                 
 }
 //prende una lista di prenotazioni per un film, metodo GET
-async function getPrenotazioni(){
-    let response = await fetch(`${API_URI}/proiezioni/${current._id}`);
+async function getPrenotazioni(id){
+    let response = await fetch(`${API_URI}/proiezioni/${id}`);
     if(!response.ok){
         if(response.status === 404){
             throw new Error("Errore: film inesistente");
@@ -136,7 +136,7 @@ async function rimuoviPosti(idPrn){
         body: JSON.stringify({
             idPrenotazione: idPrn,
             idProiezione: current._id,
-            nuoviPosti: postiScelti
+            vecchiPosti: postiRimossi
         })
     });
     if(!response.ok){
@@ -147,24 +147,8 @@ async function rimuoviPosti(idPrn){
     }
 }
 
-//chiamate finte
-function getProiezioniFake(){
-    return films;
-}
-function getPrenotazioniFake(a){
-    return prenotazioniFake;
-}
-function inviaPrenotazioneFake(a){
-    return 15;
-}
-function aggiungiPostiFake(b){
-    return;
-}
-function rimuoviPostiFake(b){
-    return;
-}
-
-function createCard(film){                                  //Gestione creazione locandine, in Proiezioni
+//logica di creazione locandine in zonaPrenotazioni, modifica dell'albero DOM
+function createCard(film){
     let elem = document.createElement("div");
     elem.className="card";
     let head = document.createElement("div");
@@ -192,7 +176,7 @@ function createCard(film){                                  //Gestione creazione
     return elem;
 }
 
-//Aggiunta di film, in Proiezioni
+//Aggiunta di film in zonaProiezioni, modifica dell'albero DOM
 function addFilm(film){
     let presentazione = document.createElement("div");
     presentazione.className="item";
@@ -200,7 +184,7 @@ function addFilm(film){
     zonaFilm.appendChild(presentazione);
 }
 
-//Aggiunta icone spettatore, indipendentemente dal film corrente
+//Aggiunta icone spettatore, indipendentemente dal film corrente; modifica albero DOM
 function createSomeImages(){
     document.querySelectorAll("td").forEach(addImage);
 }
@@ -244,7 +228,7 @@ function mostraPrenotazioni(posti, id){
     })
 }
 
-//Creazione posti sala, dipendente dal film corrente
+//Creazione posti sala, dipendente dal film corrente; modifica albero DOM
 function makeTable(){
     let nPosti = current._posti;
     let o = current._occupati.toSorted(function(a, b){
@@ -330,13 +314,12 @@ function mostraProiezioni(){
 }
 
 //fetching dei film
-/*async*/function inserisciFilm(){
-    /*getProiezioni().then((films) => films.forEach(addFilm), (error) => alert("Caricamento film non riuscito"));*/
-    getProiezioniFake().forEach(addFilm);
+async function inserisciFilm(){
+    getProiezioni().then((films) => films.forEach(addFilm), (error) => alert("Caricamento film non riuscito"));
 }
 
 //inizializzazione pagina
-/*async*/function init(){
+async function init(){
     inserisciFilm();
     mostraProiezioni();
 }
@@ -344,7 +327,7 @@ function mostraProiezioni(){
 //azioni per l'invio della prenotazione sul film corrente
 function mandaPrenotazione(){
     console.log("Invio in corso");
-    let ris = inviaPrenotazioneFake();
+    let ris = inviaPrenotazione();
     postiScelti=[];
     return ris;
 }
@@ -370,6 +353,7 @@ function trovaPrenotazione(){
     }
 }
 
+//highlighting dei posti di una prenotazione
 function mostraPrenotazione(postiPrenotati){
     postiPrenotati.sort(function(a, b){
         return a - b;
@@ -391,16 +375,13 @@ function mostraPrenotazione(postiPrenotati){
     }
 }
 
-function block(cella){
-    cella.className = "booked";
-}
-
+//invio delle modifiche al server
 function modifica(idPrenotazione){
     if(postiScelti.length != 0){
-        aggiungiPostiFake(idPrenotazione);
+        aggiungiPosti(idPrenotazione);
     }
     if(postiRimossi.length != 0){
-        rimuoviPostiFake(idPrenotazione);
+        rimuoviPosti(idPrenotazione);
     }
     alert("Prenotazione modificata con successo");
     postiScelti = [];
@@ -408,7 +389,8 @@ function modifica(idPrenotazione){
     mostraProiezioni();
 }
 
-function eliminaHandlers(){                         //relativo solo al pulsante di invio
+//Funzione che elimina il contenuto interno del pulsante di invio e i suoi handlers, in pratica sostituisce l'elemento con un suo clone
+function eliminaHandlers(){
     let old = document.getElementById("invio");
     let newNode = old.cloneNode();
     old.parentNode.replaceChild(newNode, old);
