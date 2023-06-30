@@ -47,9 +47,9 @@ public class queryAssembler {
 		//	Tolgo parentesi quadre dalla lista dei posti.
 		posti = posti.substring(1, posti.length() - 1);
 		//	Aggiungo ciascun posto nella stringa.
-		String[] splittedPosti = posti.split(", ");
+		String[] splittedPosti = posti.split(",");
 		for(int i = 0; i < splittedPosti.length; i++) {
-			query.append(splittedPosti[i]).append(i == splittedPosti.length - 1 ? "" : ", ");
+			query.append(":").append(splittedPosti[i]);
 		}
 
 		//	Chiudo la stringa.
@@ -83,7 +83,7 @@ public class queryAssembler {
 		//	Aggiungo ciascun posto nella stringa.
 		String[] splittedPosti = posti.split(", ");
 		for(int i = 0; i < splittedPosti.length; i++) {
-			query.append(splittedPosti[i]).append(i == splittedPosti.length - 1 ? "" : ", ");
+			query.append(":").append(splittedPosti[i]);
 		}
 
 		//	Chiudo la stringa.
