@@ -1,4 +1,5 @@
 package it.unimib.finalproject.server;
+import it.unimib.finalproject.server.structure.client.clientDB;
 import it.unimib.finalproject.server.utils.queryAssembler;
 import it.unimib.finalproject.server.utils.msgParser;
 
@@ -7,12 +8,15 @@ import java.util.ArrayList;
 public class test {
 
     public static void main(String args[]){
+        clientDB dbSocket = new clientDB("127.0.0.1", 3030, "[VIEW]");
+        dbSocket.start();
+        System.out.println(dbSocket.getResponse());
         /*
         testView();
         testAdd();
         testDelete();
          */
-        testParseQuery();
+        //testParseQuery();
     }
 
     static void testView(){

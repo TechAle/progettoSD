@@ -21,8 +21,8 @@ public class getFilms {
         String databaseQuery = queryAssembler.generateView();
 
         //  Invio databaseQuery al database tramite socket.
-        clientDB dbSocket = new clientDB("127.0.0.1", 3030);
-        dbSocket.sendMessage(databaseQuery);
+        clientDB dbSocket = new clientDB("127.0.0.1", 3030, databaseQuery);
+        dbSocket.start();
 
         //  Ricevo risposta dal database.
         String dbResponse = dbSocket.getResponse();
