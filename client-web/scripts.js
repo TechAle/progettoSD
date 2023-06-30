@@ -85,7 +85,7 @@ async function getPrenotazioni(id){
 async function inviaPrenotazione(){
     const endpoint = `${API_URI}/aggiungiPosto/${current._id}`
     const response = await fetch(endpoint, {
-        method: "PUT",
+        method: "POST",
         headers: {
             "Content-type": "application/json",
             "Access-Control-Request-Method": "PUT",
@@ -100,14 +100,15 @@ async function inviaPrenotazione(){
         body: JSON.stringify(postiScelti)
     });
     if(!response.ok){
-        if(response.status === 409){                     //gestione errore 408 - Conflict
+        if(response.status === 409){                     //gestione errore 409 - Conflict
             throw new Error("Prenotazione fallita: uno o più posti selezionati sono già occupati");
         }
         else throw new Error(`${response.status} ${response.statusText}`); //errore generico
     }
-    const location = response.headers.get("Location");
+    const tmp = await response.json();
+    const location = tmp["location"];
     postiScelti = [];
-    return location.split("/").pop();
+    return location/*.split("/").pop();*/
 }
 
 //invio i posti da mantenere al server (array di numeri), chiamata PUT
