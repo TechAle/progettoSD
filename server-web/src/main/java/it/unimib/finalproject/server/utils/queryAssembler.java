@@ -133,7 +133,7 @@ public class queryAssembler {
 		//	Aggiungo ciascun posto nella stringa.
 		String[] splittedPosti = posti.split(", ");
 		for(int i = 0; i < splittedPosti.length; i++) {
-			query.append(splittedPosti[i]).append(i == splittedPosti.length - 1 ? "" : ", ");
+			query.append(":").append(splittedPosti[i]);
 		}
 
 		//	Chiudo la stringa.
