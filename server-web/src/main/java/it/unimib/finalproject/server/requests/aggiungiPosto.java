@@ -76,6 +76,14 @@ public class aggiungiPosto {
         }
     }
 
+    @Path("/{idProiezione}/{idPrenotazione}")
+    @OPTIONS
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response avoidCORSBlocking2() {
+        return Response.ok().header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "*")
+                .header("Access-Control-Allow-Headers", "*").header("Access-Control-Allow-Credentials", "false")
+                .header("Access-Control-Max-Age", "3600").header("Access-Control-Request-Method", "*").header("Access-Control-Request-Headers", "origin, x-request-with").build();
+    }
 
     /**
      * Implementazione di PUT "/aggiungiPosto/{idProiezione}{idPrenotazione}{posti}".
