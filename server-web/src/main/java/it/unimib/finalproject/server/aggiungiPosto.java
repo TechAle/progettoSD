@@ -27,8 +27,7 @@ public class aggiungiPosto {
             return Response.status(400).build();
 
         //  Invio databaseQuery al database tramite socket.
-        clientDB dbSocket = new clientDB("127.0.0.1", 3030);
-        dbSocket.sendMessage(databaseQuery);
+        clientDB dbSocket = new clientDB("127.0.0.1", 3030, databaseQuery);
 
         //  Ricevo risposta dal database.
         String dbResponse = dbSocket.getResponse();
@@ -65,8 +64,7 @@ public class aggiungiPosto {
             return Response.status(408).build();
 
         //  Invio databaseQuery al database tramite socket.
-        clientDB dbSocket = new clientDB("127.0.0.1", 3030);
-        dbSocket.sendMessage(databaseQuery);
+        clientDB dbSocket = new clientDB("127.0.0.1", 3030, databaseQuery);
 
         //  Ricevo risposta dal database.
         String dbResponse = dbSocket.getResponse();
