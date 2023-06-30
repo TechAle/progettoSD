@@ -1,19 +1,19 @@
-/*********************************************************/
-/* DA FARE: sistemare le chiamate alle chiamate AJAX     */
-/*********************************************************/
-
 const API_URI = "http://localhost:8080";
 const zonaFilm= document.querySelector("#locandina");
 const zonaPrenotazioni = document.querySelector("#sala table");
 let postiScelti = [];
 let postiRimossi = [];
 
-class film {
-    constructor(identificativo, numeroPosti){
+class Film {
+    constructor(identificativo, numeroPosti, a){
         this._id = identificativo;
         this._posti = numeroPosti;
-        this._occupati = getPrenotazioni(identificativo)
+        this._occupati = a;
     }
+    static async builder(identificativo, numeroPosti){
+        let a = await getPostiOccupati(identificativo);
+        return new Film(identificativo, numeroPosti, a);
+    }    
     //si occupa di fornire i posti di una sola prenotazione
     getOccupatiById(n){
         let ris = [];
@@ -27,7 +27,7 @@ class film {
 let current;                            //utilizzo per il film
 
 //variabili di prova
-const films = [
+/*const films = [
     {id: 1, nome: "Non aprite quella porta", descrizione: "...che è dell'ufficio di Antoniotti", sala: "Sala 1", orario:"10:30", data:"a", posti: 250},
     {id: 2, nome: "Mine", descrizione: "Il protagonista dovrà affrontare diverse insidie.. per creare il proprio progetto di SD", sala: "Sala 2", orario:"9:45", data:"a", posti: 220},
     {id: 3, nome: "Wild University", descrizione: "Documentario sulla routine quotidiana degli studenti di Informatica dell'UniMiB", sala: "a", orario:"a", data:"a", posti: 125},
@@ -54,19 +54,21 @@ const prenotazioniFake = [
     [26, 2],
     [41, 1],
     [42, 1]
-] //coppie <posto, prenotazione>
-
+] //coppie <posto, prenotazione>*/
+/*const parsing="[{\"idProiezione\": 50,\"nome\":\"film1\",\"descrizione\":\"a\",\"sala\":\"a1\",\"postiTotali\":100,\"postiPrenotati\":[],\"giorno\":\"2002-06-01-10-5\"},{\"idProiezione\": 1,\"nome\":\"film2\",\"descrizione\":\"b\",\"sala\":\"a1\",\"postiTotali\":100,\"postiPrenotati\":[[0,1],[0,4],[1,6]],\"giorno\":\"2003-06-02-15-15\"},{\"idProiezione\": 2,\"nome\":\"film3\",\"descrizione\":\"c\",\"sala\":\"a2\",\"postiTotali\":50,\"postiPrenotati\":[[0,3]],\"giorno\":\"2002-08-05-19-0\"}]";
+*/
 //prende una lista di proiezioni, metodo GET
 async function getProiezioni(){
-    let response = await fetch(`${API_URI}/proiezioni`);          
-    if(!response.ok){                                             
+    let response = await fetch(`${API_URI}/getFilms`);          
+    if(!response.ok){
         throw new Error (`${response.status} ${response.statusText}`)
     }
-    return await response.json();                                 
+    return await response.json();
+    //return JSON.parse(parsing);
 }
 //prende una lista di prenotazioni per un film, metodo GET
 async function getPrenotazioni(id){
-    let response = await fetch(`${API_URI}/proiezioni/${id}`);
+    let response = await fetch(`${API_URI}/getFilm/${id}`);
     if(!response.ok){
         if(response.status === 404){
             throw new Error("Errore: film inesistente");
@@ -81,19 +83,16 @@ async function getPrenotazioni(id){
 
 //invio i posti che vorrei prenotare al server (array di numeri), chiamata POST
 async function inviaPrenotazione(){
-    const endpoint = `${API_URI}/aggiungiPosto`
+    const endpoint = `${API_URI}/aggiungiPosto/${current._id}`
     const response = await fetch(endpoint, {
         method: "POST",
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json",
         },
-        body: JSON.stringify({
-            idProiezione: current._id,
-            nuoviPosti: postiScelti
-        })
+        body: JSON.stringify(postiScelti)
     });
     if(!response.ok){
-        if(response.status === 408){                     //gestione errore 408 - Conflict
+        if(response.status === 409){                     //gestione errore 408 - Conflict
             throw new Error("Prenotazione fallita: uno o più posti selezionati sono già occupati");
         }
         else throw new Error(`${response.status} ${response.statusText}`); //errore generico
@@ -105,21 +104,20 @@ async function inviaPrenotazione(){
 
 //invio i posti da mantenere al server (array di numeri), chiamata PUT
 async function aggiungiPosti(idPrn){
-    const endpoint = `${API_URI}/aggiungiPosto`;
+    const endpoint = `${API_URI}/aggiungiPosto/${idPrn}/${current._id}`;
     const response = await fetch(endpoint, {
         method: "PUT",
         headers: {
             "Content-type": "application/json"
         },
-        body: JSON.stringify({
-            idPrenotazione: idPrn,
-            idProiezione: current._id,
-            nuoviPosti: postiScelti
-        })
+        body: JSON.stringify(postiScelti)
     });
     if(!response.ok){
         if(response.status === 404){
             throw new Error("Errore in aggiornamento: prenotazione non trovata")
+        }
+        else if(response.status === 409){
+            throw new Error("Aggiornamento fallito in aggiunta: uno o più posti selezionati sono già occupati");
         }
         throw new Error(`${response.status} ${response.statusText}`);
     }
@@ -147,6 +145,10 @@ async function rimuoviPosti(idPrn){
     }
 }
 
+async function getPostiOccupati(id){
+    return await getPrenotazioni(id);
+}
+
 //logica di creazione locandine in zonaPrenotazioni, modifica dell'albero DOM
 function createCard(film){
     let elem = document.createElement("div");
@@ -164,12 +166,12 @@ function createCard(film){
     a.appendChild(document.createTextNode(film["sala"]));
     body.appendChild(a);
     a = document.createElement("p");
-    a.appendChild(document.createTextNode(film["data"] + " " + film["orario"]));
+    a.appendChild(document.createTextNode(film["giorno"]));
     body.appendChild(a);
     a = document.createElement("button");
     a.appendChild(document.createTextNode("Prenota Visione"));
     a.addEventListener("click", function(){
-        mostraPrenotazioni(film["posti"], film["id"]);
+        mostraPrenotazioni(film["postiTotali"], film["idProiezione"]);
     });
     body.appendChild(a);
     elem.appendChild(body);
@@ -204,21 +206,21 @@ function addImage(e){
 }
 
 //compito: mostrare le prenotazioni correnti e settare il film corrente
-function mostraPrenotazioni(posti, id){
+async function mostraPrenotazioni(posti, id){
     document.getElementById("proiezioni").hidden = true;            //nasconde le proiezioni
     document.getElementById("prenotazioni").hidden = false;         //Mostra i posti, da disegnare
-    current = new film(id, posti);                                  //chiamata implicita al server, vedasi la dichiarazione della classe
-    makeTable();
+    current = await Film.builder(id, posti);                                  //chiamata implicita al server, vedasi la dichiarazione della classe
+    await makeTable();
     createSomeImages();
     document.getElementById("invio").appendChild(document.createTextNode("Invia Prenotazione"));
     document.getElementById("cerca-prenotazione").addEventListener("submit",trovaPrenotazione)
-    document.getElementById("invio").addEventListener("click", function(){
+    document.getElementById("invio").addEventListener("click", async function(){
         if(postiScelti.length == 0){
             alert("Nessuna prenotazione inviata: non hai selezionato nessun posto");
         }
         else{
             /*try{*/
-            let a = mandaPrenotazione();
+            let a = await mandaPrenotazione();
             alert("Il numero di prenotazione è: " + a);
             mostraProiezioni();
             /*} catch(error) {
@@ -229,14 +231,17 @@ function mostraPrenotazioni(posti, id){
 }
 
 //Creazione posti sala, dipendente dal film corrente; modifica albero DOM
-function makeTable(){
+async function makeTable(){
     let nPosti = current._posti;
-    let o = current._occupati.toSorted(function(a, b){
-        return a[0] - b[0];
-    });
-    if(o.length === 0) o.push([-2, -2]);         //valori impossibili da ottenere
     let nFile = Math.floor(nPosti / 20);
     let PostiRestanti = nPosti - nFile * 20;
+    let o = current._occupati.map((x) => x).sort(function(a, b){
+        return a[0] - b[0];
+    });
+/*    let o = current._occupati.toSorted(function(a, b){
+        return a[0] - b[0];
+    });*/
+    if(o.length === 0) o.push([-2, -2]);         //valori impossibili da ottenere
     for(let i = 0; i<nFile; i++){
         let row = document.createElement("tr");
         for(let j = 0; j < 20; j++){
@@ -316,6 +321,7 @@ function mostraProiezioni(){
 //fetching dei film
 async function inserisciFilm(){
     getProiezioni().then((films) => films.forEach(addFilm), (error) => alert("Caricamento film non riuscito"));
+//    getProiezioni().forEach(addFilm);
 }
 
 //inizializzazione pagina
@@ -325,9 +331,8 @@ async function init(){
 }
 
 //azioni per l'invio della prenotazione sul film corrente
-function mandaPrenotazione(){
-    console.log("Invio in corso");
-    let ris = inviaPrenotazione();
+async function mandaPrenotazione(){
+    let ris = await inviaPrenotazione();
     postiScelti=[];
     return ris;
 }
