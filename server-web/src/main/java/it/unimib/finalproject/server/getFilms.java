@@ -20,7 +20,6 @@ public class getFilms {
         //  Ottengo la query per il database.
         String databaseQuery = queryAssembler.generateView();
 
-        /*
         //  Invio databaseQuery al database tramite socket.
         clientDB dbSocket = new clientDB("127.0.0.1", 3030, databaseQuery);
         dbSocket.start();
@@ -28,10 +27,6 @@ public class getFilms {
         //  Ricevo risposta dal database.
         String dbResponse = dbSocket.getResponse();
         ArrayList<Object> parsedMsg = msgParser.parse(dbResponse);
-         */
-
-        //PROVVISORIA
-        ArrayList<Object> parsedMsg = msgParser.parse("[+[[$nomeFilm1$descrizioneFilm1$sala1:100[]$2002-06-01][$nomeFilm2$descrizioneFilm2$sala2:50[:0:1:0:4:1:6]$2003-06-02][$nomeFilm3$descrizioneFilm3$sala3:40[:0:3]$2002-08-05]]]");
 
         //  Se il database ha restituito un successo, costruiamo l'oggetto da mandare al client.
         Object pMsgType = parsedMsg.remove(0);
@@ -43,7 +38,7 @@ public class getFilms {
                 for (int i = 0; i < parsedMsg.size(); i++) {
                     switch (i) {
                         case 0:
-                            jsonString.append("id:");
+                            jsonString.append("id:{");
                             break;
                         case 1:
                             jsonString.append("nome:");
@@ -79,7 +74,10 @@ public class getFilms {
                             break;
                     }
                     jsonString.append(parsedMsg.get(i));
-                    jsonString.append(',');
+                    if(i != parsedMsg.size() - 1)
+                        jsonString.append(',');
+                    else
+                        jsonString.append('}');
                 }
                 jsonString.append(',');
             }

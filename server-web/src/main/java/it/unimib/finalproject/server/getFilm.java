@@ -20,17 +20,12 @@ public class getFilm {
         //  Ottengo stringa query da inviare al database
         String databaseQuery = queryAssembler.generateView(idProiezione);
 
-        /*
         //  Invio databaseQuery al database tramite socket.
         clientDB dbSocket = new clientDB("127.0.0.1", 3030, databaseQuery);
 
         //  Ricevo risposta dal database.
         String dbResponse = dbSocket.getResponse();
         ArrayList<Object> parsedMsg = msgParser.parse(dbResponse);
-         */
-
-        //PROVVISORIA
-        ArrayList<Object> parsedMsg = msgParser.parse("[+$nomeFilm1$descrizioneFilm1$sala1:100[]$2002-06-01]");
 
         //  Se il database ha restituito un successo, costruiamo l'oggetto da mandare al client.
         Object pMsgType = parsedMsg.remove(0);
