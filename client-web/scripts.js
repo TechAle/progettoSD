@@ -136,7 +136,7 @@ async function aggiungiPosti(idPrn){
 async function rimuoviPosti(idPrn){
     const endpoint = `${API_URI}/eliminaPosto/${current._id}/${idPrn}`
     const response = await fetch(endpoint, {
-        method: "DELETE",
+        method: "PUT",
         headers: {
             "Content-type": "application/json"
         },
