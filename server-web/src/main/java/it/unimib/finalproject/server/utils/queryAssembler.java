@@ -13,8 +13,7 @@ public class queryAssembler {
 	 * @return query [VIEW]
 	 */
 	public static String generateView(){
-		String query = "[VIEW]";
-		return query;
+		return "[VIEW]";
 	}
 
 
@@ -24,7 +23,7 @@ public class queryAssembler {
 	 */
 	public static String generateView(int idProiezione){
 		String query = "[VIEW:";
-		query += Integer.toString(idProiezione) + "]";
+		query += idProiezione + "]";
 		return query;
 	}
 
@@ -41,19 +40,21 @@ public class queryAssembler {
 		if(posti.length() == 2)
 			return "";
 
-		String query = "[ADD:";
+		StringBuilder query = new StringBuilder("[ADD:");
 		//	Aggiunta id.
-		query += Integer.toString(idProiezione) + ":[";
+		query.append(idProiezione).append("[");
 
 		//	Tolgo parentesi quadre dalla lista dei posti.
 		posti = posti.substring(1, posti.length() - 1);
 		//	Aggiungo ciascun posto nella stringa.
-		for(String s : posti.split(", "))
-			query += s + ":";
+		String[] splittedPosti = posti.split(",");
+		for(int i = 0; i < splittedPosti.length; i++) {
+			query.append(":").append(splittedPosti[i]);
+		}
 
 		//	Chiudo la stringa.
-		query += "]]";
-		return query;
+		query.append("]]");
+		return query.toString();
 
 	}
 
@@ -72,20 +73,22 @@ public class queryAssembler {
 		if(posti.length() == 2)
 			return "";
 
-		String query = "[ADD:";
+		StringBuilder query = new StringBuilder("[ADD:");
 		//	Aggiunta id.
-		query += Integer.toString(idProiezione) + ":";
-		query += Integer.toString(idPrenotazione) + ":[";
+		query.append(idProiezione).append(":");
+		query.append(idPrenotazione).append("[");
 
 		//	Tolgo parentesi quadre dalla lista dei posti.
 		posti = posti.substring(1, posti.length() - 1);
 		//	Aggiungo ciascun posto nella stringa.
-		for(String s : posti.split(", "))
-			query += s + ":";
+		String[] splittedPosti = posti.split(",");
+		for(int i = 0; i < splittedPosti.length; i++) {
+			query.append(":").append(splittedPosti[i]);
+		}
 
 		//	Chiudo la stringa.
-		query += "]]";
-		return query;
+		query.append("]]");
+		return query.toString();
 
 	}
 
@@ -98,11 +101,10 @@ public class queryAssembler {
 	 */
 	public static String generateDelete(int idProiezione, int idPrenotazione) {
 		//	Prima parte della query.
-		String query = "[DELETE:";
+		String query = "[DEL:";
 		//	Aggiunta id.
-		query += Integer.toString(idProiezione) + ":";
-		query += Integer.toString(idPrenotazione) +"]";
-
+		query += idProiezione + ":";
+		query += idPrenotazione +"]";
 		return query;
 	}
 
@@ -116,25 +118,27 @@ public class queryAssembler {
 	 */
 	public static String generateDelete(int idProiezione, int idPrenotazione, String posti){
 		//	Prima parte della query.
-		String query = "[DELETE:";
+		StringBuilder query = new StringBuilder("[DEL:");
 		//	Aggiunta id.
-		query += Integer.toString(idProiezione) + ":";
-		query += Integer.toString(idPrenotazione) +":[";
+		query.append(idProiezione).append(":");
+		query.append(idPrenotazione).append("[");
 
 		//	Controllo che posti corrisponda ad una lista vuota:
 		//	in caso affermativo aggiungo una lista vuota alla query.
 		if(posti.length() == 2)
-			return query += "]]";
+			return query.append("]]").toString();
 
 		//	Tolgo parentesi quadre dalla lista dei posti.
 		posti = posti.substring(1, posti.length() - 1);
 		//	Aggiungo ciascun posto nella stringa.
-		for(String s : posti.split(", "))
-			query += s + ":";
+		String[] splittedPosti = posti.split(",");
+		for(int i = 0; i < splittedPosti.length; i++) {
+			query.append(":").append(splittedPosti[i]);
+		}
 
 		//	Chiudo la stringa.
-		query += "]]";
-		return query;
+		query.append("]]");
+		return query.toString();
 	}
 
 

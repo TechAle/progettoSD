@@ -4,46 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03ba660b-f9f6-46a2-bc3c-3d5548629d4c" name="Changes" comment="gitignore">
-      <change beforePath="$PROJECT_DIR$/../.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_30_06_23__09_56__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_30_06_23__09_56__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../server-web/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_14_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_15_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_14_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__com_fasterxml_jackson_datatype_jackson_datatype_jsr310_2_15_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__com_fasterxml_jackson_module_jackson_module_jakarta_xmlbind_annotations_2_14_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__jakarta_activation_jakarta_activation_api_2_1_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__jakarta_annotation_jakarta_annotation_api_2_1_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__jakarta_inject_jakarta_inject_api_2_0_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__jakarta_validation_jakarta_validation_api_3_0_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__jakarta_ws_rs_jakarta_ws_rs_api_3_1_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__jakarta_xml_bind_jakarta_xml_bind_api_4_0_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__org_glassfish_grizzly_grizzly_framework_4_0_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__org_glassfish_grizzly_grizzly_http_4_0_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__org_glassfish_grizzly_grizzly_http_server_4_0_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__org_glassfish_hk2_external_aopalliance_repackaged_3_0_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__org_glassfish_hk2_hk2_api_3_0_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__org_glassfish_hk2_hk2_locator_3_0_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__org_glassfish_hk2_hk2_utils_3_0_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__org_glassfish_hk2_osgi_resource_locator_1_0_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__org_glassfish_jersey_containers_jersey_container_grizzly2_http_3_1_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__org_glassfish_jersey_core_jersey_client_3_1_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__org_glassfish_jersey_core_jersey_common_3_1_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__org_glassfish_jersey_core_jersey_server_3_1_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__org_glassfish_jersey_ext_jersey_entity_filtering_3_1_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__org_glassfish_jersey_inject_jersey_hk2_3_1_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__org_glassfish_jersey_media_jersey_media_json_jackson_3_1_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/libraries/Maven__org_javassist_javassist_3_29_0_GA.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../server-web/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../server-web/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/finalproject-server.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/aggiungiPosto.java" beforeDir="false" afterPath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/aggiungiPosto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/getFilm.java" beforeDir="false" afterPath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/getFilm.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/getFilms.java" beforeDir="false" afterPath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/getFilms.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/rimuoviPosti.java" beforeDir="false" afterPath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/rimuoviPosti.java" afterDir="false" />
+    <list default="true" id="50a9dc7e-5cd2-4a54-b785-6771de24a996" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/finalproject-database.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server-web/finalproject-server.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client-web/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../client-web/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/utils/queryAssembler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/utils/queryAssembler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,11 +35,6 @@
         <option name="useMavenConfig" value="true" />
       </MavenGeneralSettings>
     </option>
-    <option name="importingSettings">
-      <MavenImportingSettings>
-        <option name="workspaceImportEnabled" value="true" />
-      </MavenImportingSettings>
-    </option>
   </component>
   <component name="ProjectId" id="2Ruqb6RFQ8TMAD4OIY1mhMjRJFw" />
   <component name="ProjectViewState">
@@ -83,6 +45,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
     "last_opened_file_path": "C:/Users/marty/Documents/GitHub/progettoSD/database",
     "node.js.detected.package.eslint": "true",
@@ -116,7 +79,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="03ba660b-f9f6-46a2-bc3c-3d5548629d4c" name="Changes" comment="" />
+      <changelist id="50a9dc7e-5cd2-4a54-b785-6771de24a996" name="Changes" comment="" />
       <created>1688110382362</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -124,6 +87,12 @@
       <workItem from="1688110383447" duration="1260000" />
       <workItem from="1688111653821" duration="127000" />
       <workItem from="1688111784010" duration="36000" />
+      <workItem from="1688116495294" duration="30000" />
+      <workItem from="1688116629578" duration="5901000" />
+      <workItem from="1688125655527" duration="52000" />
+      <workItem from="1688125722096" duration="1000" />
+      <workItem from="1688126002850" duration="3524000" />
+      <workItem from="1688143164758" duration="1299000" />
     </task>
     <task id="LOCAL-00001" summary="gitignore">
       <created>1688111758868</created>
