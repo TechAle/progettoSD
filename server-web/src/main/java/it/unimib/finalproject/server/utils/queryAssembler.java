@@ -1,7 +1,7 @@
 package it.unimib.finalproject.server.utils;
 
 /**
- * 
+ *
  * @author Martina Elli
  * @since 25/06/23
  *
@@ -102,7 +102,7 @@ public class queryAssembler {
 		//	Aggiunta id.
 		query += Integer.toString(idProiezione) + ":";
 		query += Integer.toString(idPrenotazione) +"]";
-		
+
 		return query;
 	}
 
