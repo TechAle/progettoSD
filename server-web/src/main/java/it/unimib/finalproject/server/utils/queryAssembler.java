@@ -13,8 +13,7 @@ public class queryAssembler {
 	 * @return query [VIEW]
 	 */
 	public static String generateView(){
-		String query = "[VIEW]";
-		return query;
+		return "[VIEW]";
 	}
 
 
@@ -24,7 +23,7 @@ public class queryAssembler {
 	 */
 	public static String generateView(int idProiezione){
 		String query = "[VIEW:";
-		query += Integer.toString(idProiezione) + "]";
+		query += idProiezione + "]";
 		return query;
 	}
 
@@ -104,9 +103,8 @@ public class queryAssembler {
 		//	Prima parte della query.
 		String query = "[DEL:";
 		//	Aggiunta id.
-		query += Integer.toString(idProiezione) + ":";
-		query += Integer.toString(idPrenotazione) +"]";
-
+		query += idProiezione + ":";
+		query += idPrenotazione +"]";
 		return query;
 	}
 

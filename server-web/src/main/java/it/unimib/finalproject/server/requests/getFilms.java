@@ -1,7 +1,8 @@
 package it.unimib.finalproject.server.requests;
 
-import it.unimib.finalproject.server.structure.client.clientDB;
+import it.unimib.finalproject.server.utils.ErrorManager;
 import it.unimib.finalproject.server.utils.msgParser;
+import it.unimib.finalproject.server.utils.socket.clientDB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 import it.unimib.finalproject.server.utils.queryAssembler;
@@ -83,10 +84,17 @@ public class getFilms {
             jsonString.append(']');
 
             String temp = jsonString.toString();
-            return Response.ok(temp, MediaType.APPLICATION_JSON).build();
+            return Response.ok(temp, MediaType.APPLICATION_JSON)
+                    .header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "*")
+                    .header("Access-Control-Allow-Headers", "*").header("Access-Control-Allow-Credentials", "false")
+                    .header("Access-Control-Max-Age", "3600").build();
         }
-        return Response.status(400).build();
+        String error = (String) parsedMsg.get(0);
+        Response output = ErrorManager.getCommonError(error);
+        if (output != null)
+            return output;
+        return Response.status(500, error).build();
     }
-
-
 }
+
+

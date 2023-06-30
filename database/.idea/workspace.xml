@@ -5,20 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="50a9dc7e-5cd2-4a54-b785-6771de24a996" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/discord.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/discord.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client-web/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../client-web/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client-web/scripts.js" beforeDir="false" afterPath="$PROJECT_DIR$/../client-web/scripts.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/discord.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/jarRepositories.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/StringMessageBodyWriter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/aggiungiPosto.java" beforeDir="false" afterPath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/requests/aggiungiPosto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/getFilm.java" beforeDir="false" afterPath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/requests/getFilm.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/getFilms.java" beforeDir="false" afterPath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/requests/getFilms.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/rimuoviPosti.java" beforeDir="false" afterPath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/requests/rimuoviPosti.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/requests/aggiungiPosto.java" beforeDir="false" afterPath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/requests/aggiungiPosto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/requests/getFilm.java" beforeDir="false" afterPath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/requests/getFilm.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/requests/getFilms.java" beforeDir="false" afterPath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/requests/getFilms.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,7 +95,7 @@
       <workItem from="1688116629578" duration="5901000" />
       <workItem from="1688125655527" duration="52000" />
       <workItem from="1688125722096" duration="1000" />
-      <workItem from="1688126002850" duration="544000" />
+      <workItem from="1688126002850" duration="3524000" />
     </task>
     <task id="LOCAL-00001" summary="gitignore">
       <created>1688111758868</created>

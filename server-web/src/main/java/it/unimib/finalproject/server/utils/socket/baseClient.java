@@ -1,4 +1,4 @@
-package it.unimib.finalproject.server.structure.client;
+package it.unimib.finalproject.server.utils.socket;
 
 /**
  * Classe base per un client socket

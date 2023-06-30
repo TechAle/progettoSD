@@ -1,9 +1,9 @@
 package it.unimib.finalproject.server.requests;
 
+import it.unimib.finalproject.server.utils.socket.clientDB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 import it.unimib.finalproject.server.utils.*;
-import it.unimib.finalproject.server.structure.client.clientDB;
 
 import java.util.ArrayList;
 
@@ -74,18 +74,22 @@ public class getFilm {
             }
 
             String temp = jsonString.toString();
-            return Response.ok(temp, MediaType.APPLICATION_JSON).build();
+            return Response.ok(temp, MediaType.APPLICATION_JSON).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "*")
+                    .header("Access-Control-Allow-Headers", "*").header("Access-Control-Allow-Credentials", "false")
+                    .header("Access-Control-Max-Age", "3600").build();
         }
 
-        /*
-        String errorMsg = (String) parsedMsg.get(0);
-        int errorCode;
-        switch(errorMsg){
-            case
+        String error = (String) parsedMsg.get(0);
+        Response output = ErrorManager.getCommonError(error);
+        if (output != null)
+            return output;
+        //noinspection SwitchStatementWithTooFewBranches
+        switch (error) {
+            case "Id inesistente":
+                return Response.status(404, error).build();
+            default:
+                return Response.status(500, error).build();
         }
-        return Response.status(404).type(errorMsg).build();
-         */
-        return Response.ok().build();
     }
 
 }
