@@ -35,6 +35,15 @@ public class aggiungiPosto {
         ArrayList<Object> parsedMsg = msgParser.parse(dbResponse);
 
         //  Se il database ha restituito un successo, restituisco un JSON con dentro la location (URL).
+        Object pMsgType = parsedMsg.remove(0);
+        if(pMsgType.equals('+')){
+            StringBuilder jsonString = new StringBuilder();
+            jsonString.append("{location:");
+            jsonString.append(parsedMsg.get(0));
+            jsonString.append('}');
+            String temp = jsonString.toString();
+            return Response.ok(temp, MediaType.APPLICATION_JSON).build();
+        }
 
         return Response.ok().build();
     }
@@ -64,7 +73,9 @@ public class aggiungiPosto {
         ArrayList<Object> parsedMsg = msgParser.parse(dbResponse);
 
         //  Se il database ha restituito un successo, restituisce status code 204.
-
+        Object pMsgType = parsedMsg.remove(0);
+        if(pMsgType.equals('+'))
+            return Response.status(204).build();
 
         return Response.ok().build();
     }
