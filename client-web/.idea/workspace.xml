@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c5144d73-c83a-48f5-b479-38e0b682d2c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../database/finalproject-database.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../server-web/finalproject-server.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../database/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../database/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../database/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../database/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/utils/queryAssembler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../server-web/src/main/java/it/unimib/finalproject/server/utils/queryAssembler.java" afterDir="false" />
-    </list>
+    <list default="true" id="c5144d73-c83a-48f5-b479-38e0b682d2c4" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -52,7 +45,7 @@
       <updated>1688110492527</updated>
       <workItem from="1688110493791" duration="1049000" />
       <workItem from="1688134722638" duration="2850000" />
-      <workItem from="1688143156478" duration="1306000" />
+      <workItem from="1688143156478" duration="1845000" />
     </task>
     <servers />
   </component>
