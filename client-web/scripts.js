@@ -113,7 +113,7 @@ async function inviaPrenotazione(){
 
 //invio i posti da mantenere al server (array di numeri), chiamata PUT
 async function aggiungiPosti(idPrn){
-    const endpoint = `${API_URI}/aggiungiPosto/${idPrn}/${current._id}`;
+    const endpoint = `${API_URI}/aggiungiPosto/${current._id}/${idPrn}`;
     const response = await fetch(endpoint, {
         method: "PUT",
         headers: {
@@ -134,17 +134,13 @@ async function aggiungiPosti(idPrn){
 
 //chiamata DELETE
 async function rimuoviPosti(idPrn){
-    const endpoint = `${API_URI}/eliminaPosto`
+    const endpoint = `${API_URI}/eliminaPosto/${current._id}/${idPrn}`
     const response = await fetch(endpoint, {
         method: "DELETE",
         headers: {
             "Content-type": "application/json"
         },
-        body: JSON.stringify({
-            idPrenotazione: idPrn,
-            idProiezione: current._id,
-            vecchiPosti: postiRimossi
-        })
+        body: JSON.stringify(postiRimossi)
     });
     if(!response.ok){
         if(response.status == 404){
@@ -312,7 +308,7 @@ function modificaPosto(posto, numero){
             console.log("errore");
             return;
         }
-        postiRimossi[i] = postiRimossi[postiSRimossi.length - 1];
+        postiRimossi[i] = postiRimossi[postiRimossi.length - 1];
         postiRimossi.pop();
     }
 }
