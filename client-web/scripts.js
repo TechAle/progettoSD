@@ -85,9 +85,17 @@ async function getPrenotazioni(id){
 async function inviaPrenotazione(){
     const endpoint = `${API_URI}/aggiungiPosto/${current._id}`
     const response = await fetch(endpoint, {
-        method: "POST",
+        method: "PUT",
         headers: {
             "Content-type": "application/json",
+            "Access-Control-Request-Method": "PUT",
+            "Access-Control-Request-Headers": "content-type",
+            "Referer": "http://localhost:63342/",
+            "Origin": "http://localhost:63342",
+            "Host": "localhost:8080",
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-site"
         },
         body: JSON.stringify(postiScelti)
     });
