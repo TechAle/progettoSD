@@ -19,7 +19,7 @@ public class msgParser {
 
         queryElements.add(query.charAt(1));
         query = query.substring(2);
-        query = query.substring(0, query.length() - 2);
+        query = query.substring(0, query.length() - 1);
         int i = 0;
         try {
             while (i < query.length()) {

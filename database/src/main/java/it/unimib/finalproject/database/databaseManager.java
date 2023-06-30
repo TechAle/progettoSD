@@ -139,6 +139,9 @@ public class databaseManager {
         Proiezione toCheck = getProiezioneById(id);
         if (toCheck != null) {
             int idPrenotazione = toCheck.generaIdPrenotazione();
+            String output = toCheck.aggiungiPosti(posti, idPrenotazione);
+            if (output.startsWith("+"))
+                return output + ":" + idPrenotazione;
             return toCheck.aggiungiPosti(posti, idPrenotazione);
         } else return "-$Id inesistente";
     }

@@ -172,7 +172,7 @@ public class Proiezione {
         for(prenotazionePosto pren : postiOccupati) {
             postiOccupatiSTR.append(pren);
         }
-        return String.format("%s%s[%s]$%s-%s-%s", film, sala.toString(), postiOccupatiSTR, dateTime.toLocalDate(), dateTime.getHour(), dateTime.getMinute());
+        return String.format(":%s%s%s[%s]$%s-%s-%s", id, film, sala.toString(), postiOccupatiSTR, dateTime.toLocalDate(), dateTime.getHour(), dateTime.getMinute());
     }
 
     public int generaIdPrenotazione() {

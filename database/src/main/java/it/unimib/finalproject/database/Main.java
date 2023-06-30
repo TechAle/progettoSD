@@ -22,7 +22,7 @@ public class Main {
      * @return Un server HTTP Grizzly.
      */
     public static void startServer() {
-        new serverExample(9091, (Class<tcpSlave>) ((Object)serverSlaveExample.class)).start();
+        new serverExample(PORT, (Class<tcpSlave>) ((Object)serverSlaveExample.class)).start();
     }
 
     /**
