@@ -38,7 +38,7 @@ public class rimuoviPosti {
         String dbResponse = dbSocket.getResponse();
         ArrayList<Object> parsedMsg = msgParser.parse(dbResponse);
 
-        //  Se il database ha restituito un successo, invio al client un messaggio "No Content".
+        //  Se il database ha restituito un successo, costruiamo l'oggetto da mandare al client.
         Object pMsgType = parsedMsg.remove(0);
         if(pMsgType.equals('+'))
             return Response.status(204).build();
