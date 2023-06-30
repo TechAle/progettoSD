@@ -61,8 +61,8 @@ async function getProiezioni(){
     return await response.json();                                 
 }
 //prende una lista di prenotazioni per un film, metodo GET
-async function getPrenotazioni(){
-    let response = await fetch(`${API_URI}/getFilm/${current._id}`);
+async function getPrenotazioni(id){
+    let response = await fetch(`${API_URI}/getFilm/${id}`);
     if(!response.ok){
         if(response.status === 404){
             throw new Error("Errore: film inesistente");
