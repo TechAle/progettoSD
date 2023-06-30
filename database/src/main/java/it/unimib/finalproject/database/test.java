@@ -1,10 +1,13 @@
 package it.unimib.finalproject.database;
 
+import it.unimib.finalproject.database.structure.server.serverExample;
+import it.unimib.finalproject.database.structure.server.serverSlaveExample;
 import it.unimib.finalproject.database.utils.RESP.bodyRESP;
 import it.unimib.finalproject.database.utils.RESP.commandRESP;
 import it.unimib.finalproject.database.utils.RESP.types.arrayRESP;
 import it.unimib.finalproject.database.utils.RESP.types.intRESP;
 import it.unimib.finalproject.database.utils.parserUtils;
+import it.unimib.finalproject.database.utils.server.tcpSlave;
 
 import java.util.ArrayList;
 
@@ -13,10 +16,10 @@ import static it.unimib.finalproject.database.utils.parserUtils.getValuesArray;
 
 public class test {
     public static void main(String[] args) {
-
+        new serverExample(3030, (Class<tcpSlave>) ((Object) serverSlaveExample.class)).start();
         //ArrayList<Object> test = queryParser.parser("[+[[$nomeFilm1$descrizioneFilm1$sala1:100[]$2002-06-01][$nomeFilm2$descrizioneFilm2$sala2:50[:0:1:0:4:1:6]$2003-06-02][$nomeFilm3$descrizioneFilm3$sala3:40[:0:3]$2002-08-05]]]");
         //int a = 0;
-        testCommand();
+        //testCommand();
     }
 
     static void testCommand() {

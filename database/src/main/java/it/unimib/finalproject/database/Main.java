@@ -1,5 +1,9 @@
 package it.unimib.finalproject.database;
 
+import it.unimib.finalproject.database.structure.server.serverExample;
+import it.unimib.finalproject.database.structure.server.serverSlaveExample;
+import it.unimib.finalproject.database.utils.server.tcpSlave;
+
 import java.net.*;
 import java.io.*;
 
@@ -18,15 +22,7 @@ public class Main {
      * @return Un server HTTP Grizzly.
      */
     public static void startServer() {
-        try {
-            var server = new ServerSocket(PORT);
-
-            System.out.println("Database listening at localhost:" + PORT);
-            while (true)
-                new Handler(server.accept()).start();
-        } catch (IOException e) {
-            System.err.println(e);
-        }
+        new serverExample(9091, (Class<tcpSlave>) ((Object)serverSlaveExample.class)).start();
     }
 
     /**
@@ -47,6 +43,7 @@ public class Main {
                 String inputLine;
 
                 while ((inputLine = in.readLine()) != null) {
+                    System.out.println(inputLine);
                     if (".".equals(inputLine)) {
                         out.println("bye");
                         break;
