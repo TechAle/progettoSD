@@ -15,7 +15,6 @@ public class rimuoviPosti {
 
     @Path("/{idProiezione}/{idPrenotazione}")
     @OPTIONS
-    @Produces(MediaType.APPLICATION_JSON)
     public Response avoidCORSBlocking() {
         return Response.ok().header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "*")
                 .header("Access-Control-Allow-Headers", "*").header("Access-Control-Allow-Credentials", "false")
@@ -49,7 +48,9 @@ public class rimuoviPosti {
         //  Se il database ha restituito un successo, invio messaggio "No Content".
         Object pMsgType = parsedMsg.remove(0);
         if(pMsgType.equals('+'))
-            return Response.status(200).build();
+            return Response.status(200).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "*")
+                    .header("Access-Control-Allow-Headers", "*").header("Access-Control-Allow-Credentials", "false")
+                    .header("Access-Control-Max-Age", "3600").header("Access-Control-Request-Method", "*").header("Access-Control-Request-Headers", "origin, x-request-with").build();
 
         String error = (String) parsedMsg.get(0);
         Response output = ErrorManager.getCommonError(error);
