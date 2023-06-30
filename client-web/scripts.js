@@ -4,12 +4,16 @@ const zonaPrenotazioni = document.querySelector("#sala table");
 let postiScelti = [];
 let postiRimossi = [];
 
-class film {
-    constructor(identificativo, numeroPosti){
+class Film {
+    constructor(identificativo, numeroPosti, a){
         this._id = identificativo;
         this._posti = numeroPosti;
-        this._occupati = getPrenotazioni(identificativo);
+        this._occupati = a;
     }
+    static async builder(identificativo, numeroPosti){
+        let a = await getPostiOccupati(identificativo);
+        return new Film(identificativo, numeroPosti, a);
+    }    
     //si occupa di fornire i posti di una sola prenotazione
     getOccupatiById(n){
         let ris = [];
@@ -72,7 +76,7 @@ async function getPrenotazioni(id){
         throw new Error (`${response.status} ${response.statusText}`)
     }
     let a = await response.json();
-    return JSON.parse(a)["postiPrenotati"].sort(function(a, b){
+    return a["postiPrenotati"].sort(function(a, b){
         return a[0] - b[0];
     })
 }
@@ -83,7 +87,7 @@ async function inviaPrenotazione(){
     const response = await fetch(endpoint, {
         method: "POST",
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json",
         },
         body: JSON.stringify(postiScelti)
     });
@@ -139,6 +143,10 @@ async function rimuoviPosti(idPrn){
         }
         throw new Error(`${response.status} ${response.statusText}`);
     }
+}
+
+async function getPostiOccupati(id){
+    return await getPrenotazioni(id);
 }
 
 //logica di creazione locandine in zonaPrenotazioni, modifica dell'albero DOM
@@ -198,21 +206,21 @@ function addImage(e){
 }
 
 //compito: mostrare le prenotazioni correnti e settare il film corrente
-function mostraPrenotazioni(posti, id){
+async function mostraPrenotazioni(posti, id){
     document.getElementById("proiezioni").hidden = true;            //nasconde le proiezioni
     document.getElementById("prenotazioni").hidden = false;         //Mostra i posti, da disegnare
-    current = new film(id, posti);                                  //chiamata implicita al server, vedasi la dichiarazione della classe
-    makeTable();
+    current = await Film.builder(id, posti);                                  //chiamata implicita al server, vedasi la dichiarazione della classe
+    await makeTable();
     createSomeImages();
     document.getElementById("invio").appendChild(document.createTextNode("Invia Prenotazione"));
     document.getElementById("cerca-prenotazione").addEventListener("submit",trovaPrenotazione)
-    document.getElementById("invio").addEventListener("click", function(){
+    document.getElementById("invio").addEventListener("click", async function(){
         if(postiScelti.length == 0){
             alert("Nessuna prenotazione inviata: non hai selezionato nessun posto");
         }
         else{
             /*try{*/
-            let a = mandaPrenotazione();
+            let a = await mandaPrenotazione();
             alert("Il numero di prenotazione è: " + a);
             mostraProiezioni();
             /*} catch(error) {
@@ -223,14 +231,17 @@ function mostraPrenotazioni(posti, id){
 }
 
 //Creazione posti sala, dipendente dal film corrente; modifica albero DOM
-function makeTable(){
+async function makeTable(){
     let nPosti = current._posti;
-    let o = current._occupati.toSorted(function(a, b){
-        return a[0] - b[0];
-    });
-    if(o.length === 0) o.push([-2, -2]);         //valori impossibili da ottenere
     let nFile = Math.floor(nPosti / 20);
     let PostiRestanti = nPosti - nFile * 20;
+    let o = current._occupati.map((x) => x).sort(function(a, b){
+        return a[0] - b[0];
+    });
+/*    let o = current._occupati.toSorted(function(a, b){
+        return a[0] - b[0];
+    });*/
+    if(o.length === 0) o.push([-2, -2]);         //valori impossibili da ottenere
     for(let i = 0; i<nFile; i++){
         let row = document.createElement("tr");
         for(let j = 0; j < 20; j++){
@@ -309,7 +320,7 @@ function mostraProiezioni(){
 
 //fetching dei film
 async function inserisciFilm(){
-    getProiezioni().then((films) => JSON.parse(films).forEach(addFilm), (error) => alert("Caricamento film non riuscito"));
+    getProiezioni().then((films) => films.forEach(addFilm), (error) => alert("Caricamento film non riuscito"));
 //    getProiezioni().forEach(addFilm);
 }
 
@@ -320,9 +331,8 @@ async function init(){
 }
 
 //azioni per l'invio della prenotazione sul film corrente
-function mandaPrenotazione(){
-    console.log("Invio in corso");
-    let ris = inviaPrenotazione();
+async function mandaPrenotazione(){
+    let ris = await inviaPrenotazione();
     postiScelti=[];
     return ris;
 }
