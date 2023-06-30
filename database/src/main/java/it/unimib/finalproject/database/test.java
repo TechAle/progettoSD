@@ -1,6 +1,5 @@
 package it.unimib.finalproject.database;
 
-// TODO Semafori lettura scrittura
 import it.unimib.finalproject.database.utils.RESP.bodyRESP;
 import it.unimib.finalproject.database.utils.RESP.commandRESP;
 import it.unimib.finalproject.database.utils.RESP.types.arrayRESP;
@@ -14,11 +13,14 @@ import static it.unimib.finalproject.database.utils.parserUtils.getValuesArray;
 
 public class test {
     public static void main(String[] args) {
+
+        //ArrayList<Object> test = queryParser.parser("[+[[$nomeFilm1$descrizioneFilm1$sala1:100[]$2002-06-01][$nomeFilm2$descrizioneFilm2$sala2:50[:0:1:0:4:1:6]$2003-06-02][$nomeFilm3$descrizioneFilm3$sala3:40[:0:3]$2002-08-05]]]");
+        //int a = 0;
         testCommand();
     }
 
     static void testCommand() {
-        commandRESP comando = parserUtils.parseRedisCommand("[VIEW\r\nDEL:1:0[:4]\r\nADD:2[:0:1]]");
+        commandRESP comando = parserUtils.parseRedisCommand("[VIEW:50\r\nDEL:1:0[:4]\r\nADD:2[:0:1]]");
         // Se la prima azione è un errore, allora vuol dire che c'è un problema con la sintassi del comando
         String primaAzione = comando.getAction();
         if (comando.isError()) {
@@ -41,7 +43,7 @@ public class test {
                     if (comando.getOperazione() == null)
                         output.append(databaseManager.getInstance().getStanze());
                     else if (comando.getOperazione() instanceof intRESP)
-                        output.append(databaseManager.getInstance().getStanza(
+                        output.append(databaseManager.getInstance().getPrenotazione(
                                 ((intRESP) comando.getOperazione()).getValue())
                         );
                 }

@@ -40,7 +40,7 @@ public class parserUtils {
                 return new commandRESP("-$Errore sintassi");
             }
             // Vari errori
-            if (body == null && !operation.equals("VIEW")) return new commandRESP("-$Errore nella sintassi");
+            if (body == null && !operation.equals("VIEW")) return new commandRESP("-$Errore sintassi");
             else if (body != null && body.error)
                 return new commandRESP("-$" + body.getError());
             // Inizializzo l'output finale
@@ -178,6 +178,9 @@ public class parserUtils {
         return -1;
     }
 
+    /**
+     * Transform an arrayRESP into ArrayList getting only integers
+     */
     public static ArrayList<Integer> getValuesArray(arrayRESP input) {
         bodyRESP nextCheck = input.getValue();
         ArrayList<Integer> output = new ArrayList<>();
