@@ -26,7 +26,7 @@ public class rimuoviPosti {
      * Implementazione di PUT "/rimuoviPosti/{idProiezione}{idPrenotazione}".
      */
     @Path("/{idProiezione}/{idPrenotazione}")
-    @PUT
+    @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteSeats(@PathParam("idProiezione") int idProiezione, @PathParam("idPrenotazione") int idPrenotazione, String posti){

@@ -81,7 +81,7 @@ public class aggiungiPosto {
      * Implementazione di PUT "/aggiungiPosto/{idProiezione}{idPrenotazione}{posti}".
      */
     @Path("/{idProiezione}/{idPrenotazione}")
-    @POST
+    @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response bookNewSeats(@PathParam("idProiezione") int idProiezione, @PathParam("idPrenotazione") int idPrenotazione, String posti){
