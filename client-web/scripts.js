@@ -147,7 +147,8 @@ async function rimuoviPosti(idPrn){
     }
 }
 
-function createCard(film){                                  //Gestione creazione locandine, in Proiezioni
+//logica di creazione locandine in zonaPrenotazioni, modifica dell'albero DOM
+function createCard(film){
     let elem = document.createElement("div");
     elem.className="card";
     let head = document.createElement("div");
@@ -175,7 +176,7 @@ function createCard(film){                                  //Gestione creazione
     return elem;
 }
 
-//Aggiunta di film, in Proiezioni
+//Aggiunta di film in zonaProiezioni, modifica dell'albero DOM
 function addFilm(film){
     let presentazione = document.createElement("div");
     presentazione.className="item";
@@ -183,7 +184,7 @@ function addFilm(film){
     zonaFilm.appendChild(presentazione);
 }
 
-//Aggiunta icone spettatore, indipendentemente dal film corrente
+//Aggiunta icone spettatore, indipendentemente dal film corrente; modifica albero DOM
 function createSomeImages(){
     document.querySelectorAll("td").forEach(addImage);
 }
@@ -227,7 +228,7 @@ function mostraPrenotazioni(posti, id){
     })
 }
 
-//Creazione posti sala, dipendente dal film corrente
+//Creazione posti sala, dipendente dal film corrente; modifica albero DOM
 function makeTable(){
     let nPosti = current._posti;
     let o = current._occupati.toSorted(function(a, b){
@@ -352,6 +353,7 @@ function trovaPrenotazione(){
     }
 }
 
+//highlighting dei posti di una prenotazione
 function mostraPrenotazione(postiPrenotati){
     postiPrenotati.sort(function(a, b){
         return a - b;
@@ -373,10 +375,7 @@ function mostraPrenotazione(postiPrenotati){
     }
 }
 
-function block(cella){
-    cella.className = "booked";
-}
-
+//invio delle modifiche al server
 function modifica(idPrenotazione){
     if(postiScelti.length != 0){
         aggiungiPosti(idPrenotazione);
@@ -390,7 +389,8 @@ function modifica(idPrenotazione){
     mostraProiezioni();
 }
 
-function eliminaHandlers(){                         //relativo solo al pulsante di invio
+//Funzione che elimina il contenuto interno del pulsante di invio e i suoi handlers, in pratica sostituisce l'elemento con un suo clone
+function eliminaHandlers(){
     let old = document.getElementById("invio");
     let newNode = old.cloneNode();
     old.parentNode.replaceChild(newNode, old);
