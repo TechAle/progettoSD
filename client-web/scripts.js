@@ -8,7 +8,7 @@ class film {
     constructor(identificativo, numeroPosti){
         this._id = identificativo;
         this._posti = numeroPosti;
-        this._occupati = getPrenotazioni(identificativo)
+        this._occupati = getPrenotazioni(identificativo);
     }
     //si occupa di fornire i posti di una sola prenotazione
     getOccupatiById(n){
@@ -51,20 +51,20 @@ const prenotazioniFake = [
     [41, 1],
     [42, 1]
 ] //coppie <posto, prenotazione>*/
-const parsing="[{\"idProiezione\": 50,\"nome\":\"film1\",\"descrizione\":\"a\",\"sala\":\"a1\",\"postiTotali\":100,\"postiPrenotati\":[],\"giorno\":\"2002-06-01-10-5\"},{\"idProiezione\": 1,\"nome\":\"film2\",\"descrizione\":\"b\",\"sala\":\"a1\",\"postiTotali\":100,\"postiPrenotati\":[[0,1],[0,4],[1,6]],\"giorno\":\"2003-06-02-15-15\"},{\"idProiezione\": 2,\"nome\":\"film3\",\"descrizione\":\"c\",\"sala\":\"a2\",\"postiTotali\":50,\"postiPrenotati\":[[0,3]],\"giorno\":\"2002-08-05-19-0\"}]";
-
+/*const parsing="[{\"idProiezione\": 50,\"nome\":\"film1\",\"descrizione\":\"a\",\"sala\":\"a1\",\"postiTotali\":100,\"postiPrenotati\":[],\"giorno\":\"2002-06-01-10-5\"},{\"idProiezione\": 1,\"nome\":\"film2\",\"descrizione\":\"b\",\"sala\":\"a1\",\"postiTotali\":100,\"postiPrenotati\":[[0,1],[0,4],[1,6]],\"giorno\":\"2003-06-02-15-15\"},{\"idProiezione\": 2,\"nome\":\"film3\",\"descrizione\":\"c\",\"sala\":\"a2\",\"postiTotali\":50,\"postiPrenotati\":[[0,3]],\"giorno\":\"2002-08-05-19-0\"}]";
+*/
 //prende una lista di proiezioni, metodo GET
-/*async*/ function getProiezioni(){
-    /*let response = await fetch(`${API_URI}/films`);          
+async function getProiezioni(){
+    let response = await fetch(`${API_URI}/getFilms`);          
     if(!response.ok){
         throw new Error (`${response.status} ${response.statusText}`)
     }
-    return await response.json();*/
-    return JSON.parse(parsing);
+    return await response.json();
+    //return JSON.parse(parsing);
 }
 //prende una lista di prenotazioni per un film, metodo GET
 async function getPrenotazioni(id){
-    let response = await fetch(`${API_URI}/films/${id}`);
+    let response = await fetch(`${API_URI}/getFilm/${id}`);
     if(!response.ok){
         if(response.status === 404){
             throw new Error("Errore: film inesistente");
@@ -72,7 +72,7 @@ async function getPrenotazioni(id){
         throw new Error (`${response.status} ${response.statusText}`)
     }
     let a = await response.json();
-    return a["postiPrenotati"].sort(function(a, b){
+    return JSON.parse(a)["postiPrenotati"].sort(function(a, b){
         return a[0] - b[0];
     })
 }
@@ -308,9 +308,9 @@ function mostraProiezioni(){
 }
 
 //fetching dei film
-/*async*/ function inserisciFilm(){
-    /*getProiezioni().then((films) => films.forEach(addFilm), (error) => alert("Caricamento film non riuscito"));*/
-    getProiezioni().forEach(addFilm);
+async function inserisciFilm(){
+    getProiezioni().then((films) => JSON.parse(films).forEach(addFilm), (error) => alert("Caricamento film non riuscito"));
+//    getProiezioni().forEach(addFilm);
 }
 
 //inizializzazione pagina
