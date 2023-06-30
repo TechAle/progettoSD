@@ -1,4 +1,4 @@
-package it.unimib.finalproject.server;
+package it.unimib.finalproject.server.requests;
 
 import it.unimib.finalproject.server.structure.client.clientDB;
 import it.unimib.finalproject.server.utils.msgParser;

@@ -1,4 +1,4 @@
-package it.unimib.finalproject.server;
+package it.unimib.finalproject.server.requests;
 
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
@@ -72,7 +72,6 @@ public class getFilm {
                 else
                     jsonString.append('}');
             }
-            jsonString.append('}');
 
             String temp = jsonString.toString();
             return Response.ok(temp, MediaType.APPLICATION_JSON).build();
