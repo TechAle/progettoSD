@@ -12,6 +12,9 @@
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+.idea/discord.xml
+
+.idea/misc.xml
 
 # AWS User-specific
 .idea/**/aws.xml
@@ -158,5 +161,8 @@ $RECYCLE.BIN/
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# Obsidian file
+.obsidian
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,intellij,maven,windows,java

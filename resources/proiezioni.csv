@@ -1,0 +1,4 @@
+idProiezione, idFilm, postiOccupati,data,sala,orario
+50,10, [],01-06-2002,sala1,10:05
+1,48, [(0.1);(0.4);(1.6)],02-06-2003,sala2,15:15
+2,1, [(0.3)],05-08-2002,sala3,19:00
