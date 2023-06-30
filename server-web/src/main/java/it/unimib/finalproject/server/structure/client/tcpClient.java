@@ -42,7 +42,7 @@ public abstract class tcpClient extends baseClient {
 
 
     @Override
-    protected void sendMessage(String message) {
+    public void sendMessage(String message) {
         writer.println(message);
     }
 
