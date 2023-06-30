@@ -34,52 +34,51 @@ public class getFilms {
             ArrayList<Object> arrayQuack = (ArrayList<Object>) parsedMsg.get(0);
             StringBuilder jsonString = new StringBuilder();
             jsonString.append('[');
+            int idx = 0;
             for(Object q : arrayQuack) {
-                for (int i = 0; i < parsedMsg.size(); i++) {
+                ArrayList<Object> castedQ = (ArrayList<Object>) q;
+                jsonString.append('{');
+                for (int i = 0; i < castedQ.size(); i++) {
                     switch (i) {
                         case 0:
-                            jsonString.append("id:{");
+                            jsonString.append("\"idProiezione\": " + castedQ.get(i));
                             break;
                         case 1:
-                            jsonString.append("nome:");
+                            jsonString.append("\"nome\":").append("\"").append(castedQ.get(i)).append("\"");
                             break;
                         case 2:
-                            jsonString.append("descrizione:");
+                            jsonString.append("\"descrizione\":").append("\"").append(castedQ.get(i)).append("\"");
                             break;
                         case 3:
-                            jsonString.append("sala:");
+                            jsonString.append("\"sala\":").append("\"").append(castedQ.get(i)).append("\"");
                             break;
                         case 4:
-                            jsonString.append("orario:");
+                            jsonString.append("\"postiTotali\":").append(castedQ.get(i));
                             break;
                         case 5:
-                            jsonString.append("postiPrenotati:[");
-                            ArrayList<Object> a = (ArrayList<Object>) parsedMsg.get(i);
-                            for (int j = 0; j < a.size(); j++) {
-                                ArrayList<Object> b =(ArrayList<Object>) a.get(j);
-                                jsonString.append('[');
-                                for(int k = 0; k < b.size(); k++){
-                                    jsonString.append(b.get(k));
-                                    if(k != b.size() - 1)
-                                        jsonString.append(',');
-                                }
-                                jsonString.append(']');
-                                if (j != a.size() - 1)
+                            jsonString.append("\"postiPrenotati\":[");
+                            ArrayList<Object> a = (ArrayList<Object>) castedQ.get(i);
+                            for (int j = 0; j < a.size() / 2; j++) {
+                                Object idProiezione = a.get(j*2);
+                                Object idPrenotazione = a.get((j*2)+1);
+                                jsonString.append(String.format("[%s,%s]", idProiezione, idPrenotazione));
+                                if (j != a.size()/2 - 1)
                                     jsonString.append(',');
                             }
                             jsonString.append(']');
                             break;
                         case 6:
-                            jsonString.append("data:");
+                            jsonString.append("\"giorno\":").append("\"").append(castedQ.get(i)).append("\"");
                             break;
                     }
-                    jsonString.append(parsedMsg.get(i));
-                    if(i != parsedMsg.size() - 1)
+                    if(i != castedQ.size() - 1)
                         jsonString.append(',');
                     else
                         jsonString.append('}');
                 }
-                jsonString.append(',');
+                if (idx != arrayQuack.size() - 1)
+                    jsonString.append(',');
+                idx++;
             }
             jsonString.append(']');
 

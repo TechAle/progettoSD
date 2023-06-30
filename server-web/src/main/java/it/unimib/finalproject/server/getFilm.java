@@ -22,6 +22,7 @@ public class getFilm {
 
         //  Invio databaseQuery al database tramite socket.
         clientDB dbSocket = new clientDB("127.0.0.1", 3030, databaseQuery);
+        dbSocket.start();
 
         //  Ricevo risposta dal database.
         String dbResponse = dbSocket.getResponse();
@@ -30,49 +31,46 @@ public class getFilm {
         //  Se il database ha restituito un successo, costruiamo l'oggetto da mandare al client.
         Object pMsgType = parsedMsg.remove(0);
         if(pMsgType.equals('+')) {
-            ArrayList<Object> arrayQuack = (ArrayList<Object>) parsedMsg.get(0);
+            ArrayList<Object> castedQ = parsedMsg;
             StringBuilder jsonString = new StringBuilder();
             jsonString.append('{');
-            for (int i = 0; i < parsedMsg.size(); i++) {
+            for (int i = 0; i < castedQ.size(); i++) {
                 switch (i) {
                     case 0:
-                        jsonString.append("id:");
+                        jsonString.append("\"idProiezione\": " + castedQ.get(i));
                         break;
                     case 1:
-                        jsonString.append("nome:");
+                        jsonString.append("\"nome\":").append("\"").append(castedQ.get(i)).append("\"");
                         break;
                     case 2:
-                        jsonString.append("descrizione:");
+                        jsonString.append("\"descrizione\":").append("\"").append(castedQ.get(i)).append("\"");
                         break;
                     case 3:
-                        jsonString.append("sala:");
+                        jsonString.append("\"sala\":").append("\"").append(castedQ.get(i)).append("\"");
                         break;
                     case 4:
-                        jsonString.append("orario:");
+                        jsonString.append("\"postiTotali\":").append(castedQ.get(i));
                         break;
                     case 5:
-                        jsonString.append("postiPrenotati:[");
-                        ArrayList<Object> a = (ArrayList<Object>) parsedMsg.get(i);
-                        for (int j = 0; j < a.size(); j++) {
-                            ArrayList<Object> b =(ArrayList<Object>) a.get(j);
-                            jsonString.append('[');
-                            for(int k = 0; k < b.size(); k++){
-                                jsonString.append(b.get(k));
-                                if(k != b.size() - 1)
-                                    jsonString.append(',');
-                            }
-                            jsonString.append(']');
-                            if (j != a.size() - 1)
+                        jsonString.append("\"postiPrenotati\":[");
+                        ArrayList<Object> a = (ArrayList<Object>) castedQ.get(i);
+                        for (int j = 0; j < a.size() / 2; j++) {
+                            Object idProiezioneTemp = a.get(j*2);
+                            Object idPrenotazione = a.get((j*2)+1);
+                            jsonString.append(String.format("[%s,%s]", idProiezioneTemp, idPrenotazione));
+                            if (j != a.size()/2 - 1)
                                 jsonString.append(',');
                         }
                         jsonString.append(']');
                         break;
                     case 6:
-                        jsonString.append("data:");
+                        jsonString.append("\"giorno\":").append("\"").append(castedQ.get(i)).append("\"");
                         break;
                 }
-                jsonString.append(parsedMsg.get(i));
-                jsonString.append(',');
+                if(i != castedQ.size() - 1)
+                    jsonString.append(',');
+                else
+                    jsonString.append('}');
             }
             jsonString.append('}');
 

@@ -9,8 +9,5 @@
         <module name="finalproject-server" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="server-web" target="1.5" />
-    </bytecodeTargetLevel>
   </component>
 </project>
