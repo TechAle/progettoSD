@@ -57,7 +57,7 @@ public class getFilm {
                         for (int j = 0; j < a.size() / 2; j++) {
                             Object idProiezioneTemp = a.get(j*2);
                             Object idPrenotazione = a.get((j*2)+1);
-                            jsonString.append(String.format("[%s,%s]", idProiezioneTemp, idPrenotazione));
+                            jsonString.append(String.format("[%s,%s]", idPrenotazione, idProiezioneTemp));
                             if (j != a.size()/2 - 1)
                                 jsonString.append(',');
                         }
