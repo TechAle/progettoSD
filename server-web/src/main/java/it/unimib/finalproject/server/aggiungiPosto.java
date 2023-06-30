@@ -22,7 +22,7 @@ public class aggiungiPosto {
         String databaseQuery = queryAssembler.generateAdd(idProiezione, posti);
 
         //  Gestione lista vuota: viene restituita una stringa vuota,
-        //  per cui viene inviato un messaggio "bad request" al client.
+        //  per cui viene inviato un messaggio "Bad Request" al client.
         if(databaseQuery.equals(""))
             return Response.status(400).build();
 
@@ -35,6 +35,13 @@ public class aggiungiPosto {
         ArrayList<Object> parsedMsg = msgParser.parse(dbResponse);
 
         //  Se il database ha restituito un successo, restituisco un JSON con dentro la location (URL).
+        Object pMsgType = parsedMsg.remove(0);
+        if(pMsgType.equals('+')){
+            StringBuilder jsonString = new StringBuilder();
+            jsonString.append("{location:");
+            jsonString.append(parsedMsg.get(0));
+            jsonString.append('}');
+        }
 
         return Response.ok().build();
     }
@@ -51,7 +58,7 @@ public class aggiungiPosto {
         String databaseQuery = queryAssembler.generateAdd(idProiezione, idPrenotazione, posti);
 
         //  Gestione lista vuota: viene restituita una stringa vuota,
-        //  per cui viene inviato un messaggio "no content" al client.
+        //  per cui viene inviato un messaggio "No Content" al client.
         if(databaseQuery.equals(""))
             return Response.status(408).build();
 
@@ -63,7 +70,10 @@ public class aggiungiPosto {
         String dbResponse = dbSocket.getResponse();
         ArrayList<Object> parsedMsg = msgParser.parse(dbResponse);
 
-        //  Se il database ha restituito un successo, restituisce status code 204.
+        //  Se il database ha restituito un successo, restituisco status code 204.
+        Object pMsgType = parsedMsg.remove(0);
+        if(pMsgType.equals('+'))
+            return Response.status(204).build();
 
 
         return Response.ok().build();
